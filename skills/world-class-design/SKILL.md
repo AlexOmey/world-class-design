@@ -112,6 +112,17 @@ Voice is malleable. Truth is not. No agent may invent or alter:
 
 Take these from the codebase or the approved source, verbatim, and cite where each came from. An agent that writes "USD 29/mo" or "SOC 2 compliant" from imagination has created a legal problem, not a design. When a fact appears in two places that disagree, **stop and report the conflict** rather than picking one.
 
+**"Sourced from code" is not the same as "cleared to publish."** This is the layer under the fact rule, and it is easy to miss. A value can be live, correctly imported, drift-proof — and still not approved for a public page. Observed in one run: annual pricing and top-up amounts resolved live from the billing module while the project's own decision brief marked both *open* and said in terms "these are not approved amounts yet"; a signup grant was live in SQL while a *settled* decision said not to issue it in the current mode; and a section displayed an internal enum key (`Grounded`) where a code-owned display map, protected by a coupling test, said users should see a different word.
+
+So instruct agents to check **provenance, not just existence**:
+
+- Prefer the **decision record** over the implementation when they disagree — a plan, ADR, or decision brief usually outranks a constant that has not caught up.
+- Treat a value behind a **feature flag, kill switch, or mode switch** as unpublishable until someone confirms its state in production.
+- Distinguish **stored keys from display labels**. If the codebase maps one to the other, the map wins.
+- Where a fact is live but unapproved, **omit it and flag it** rather than printing or silently resolving it.
+
+Three independent variants in one run each reached "omit and flag" on the same three facts without seeing each other's work. That convergence is the rule functioning; a variant that had shipped those numbers would have published unapproved prices.
+
 ### Two rules that hold in both modes
 
 **The seed must not reach the page.** "Don't reveal the string" is too narrow — the leak is the seed's *derived vocabulary* surfacing as rendered text. A run seeded toward weaving shipped a visible label reading `Warp & Weft · London`. Class names, CSS comments and filenames may use the seed freely; **anything a visitor can read may not**.
