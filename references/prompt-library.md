@@ -21,6 +21,28 @@ Don't reveal the string in the design. It's only for your inspiration.
 
 Run 3–4 of these concurrently as independent subagents. Each gets its own seed and never sees the others.
 
+**Append this copy block to every build prompt** (see [Copy integrity](../SKILL.md#copy-integrity-applies-to-every-stage)). Without it, agents invent chrome text and leak the seed's vocabulary into visible labels:
+
+```
+COPY RULES — these override any design consideration:
+
+- Every string I supplied ships VERBATIM. Do not rewrite, paraphrase,
+  shorten or "punch up" copy to suit the layout. Adapt the design to the
+  words, not the words to the design.
+- If a line genuinely does not fit, you may omit it entirely or trim it.
+  You may not reword it. List anything you omit or trim.
+- Do NOT invent new visible text. No eyebrow labels, section kickers,
+  captions, taglines, CTA microcopy, footer slugs or status pills beyond
+  what I supplied. If a slot has no copy, reuse supplied text or leave it
+  empty — do not fill it. Invented eyebrow labels are the single most
+  common AI-design tell.
+- The seed must not reach the page. Its derived vocabulary must not
+  appear in ANY string a visitor can read. Class names, CSS comments and
+  filenames may use it freely; rendered text may not.
+- End your report with an explicit list of every copy string you changed,
+  trimmed, omitted, or added. If that list is empty, say so.
+```
+
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
 
 ### ⚠️ The medium trap — read this before running variants

@@ -83,6 +83,28 @@ When a capability is missing, say so and carry on with the rest. **Never paper o
 
 ---
 
+## Copy integrity (applies to every stage)
+
+**Copy is content, not design material.** The design adapts to the words; the words do not adapt to the design. Put this in every build and refine prompt — without it, agents rewrite freely and you lose the user's voice while they are looking at colours.
+
+| Operation | Allowed? |
+|---|---|
+| Ship supplied copy verbatim | Yes — the default |
+| Omit a supplied line entirely | Yes, if the design genuinely has no room |
+| Truncate / trim a supplied line | Yes, sparingly, if length breaks the layout |
+| Rewrite, paraphrase, or "punch up" | **No** |
+| Invent new visible text | **No** |
+
+**The leak is almost never the body copy — it's the chrome.** Agents faithfully paste the bio and then invent an eyebrow, a section label, a caption, a tagline, a CTA microcopy line, a footer slug. Observed in a single run: `The Weekly Dispatch`, `A decade on one thread`, `I ship AI products and write down what happens. Based in London, usually in an editor.` None were briefed.
+
+That is two failures at once: it overwrites the user's voice, and invented eyebrow labels are the **first row of [ai-tells.md](references/ai-tells.md)** — the most reliable AI tell there is. So the rule: if the brief did not supply text for a slot, either reuse supplied text or leave the slot empty. Do not fill it.
+
+**The seed must not reach the page.** "Don't reveal the string" is too narrow — the leak is the seed's *derived vocabulary* surfacing as rendered text. A run seeded toward weaving shipped a visible label reading `Warp & Weft · London`. Class names, CSS comments and file names may use the seed's vocabulary freely; **anything a visitor can read may not**.
+
+**Report every deviation.** End each build with an explicit list of copy changed, trimmed, or omitted. Copy is the user's call under Technique 8 — an implementer may propose a cut, never decide one.
+
+---
+
 ## Stage 1 — Discover
 
 ### Technique 1: Seed strings (always do this)
