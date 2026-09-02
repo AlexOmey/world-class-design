@@ -143,6 +143,19 @@ If captures come back blank, truncated, or timed out, see [Troubleshooting scree
 
 Run 1–2 iterations first and check the score is actually climbing before committing to more. If it plateaus or oscillates, stop and show the user — a stuck score means the critic is now grading itself, not the page.
 
+**A stateless critic will contradict itself. Plan for it.** Observed in a real run, same page, consecutive iterations:
+
+> Iteration 1: *"The two-spot-ink conceit is skin-deep — the headline says print and everything else says Tailwind."*
+> Iteration 2, after the implementer spread the effect: *"Misregistration is applied to everything. It's the AI-era pink-offset-shadow trope. Keep it on the hero name only."*
+
+Fresh context is what keeps the critic honest, and it is also what lets it reverse its own instruction. Combined with "name the biggest gaps" — which guarantees a list whatever the quality — the score tracks *how much it can find*, not whether the page improved. That run scored 5/10 twice across a large, genuine improvement.
+
+Three defences:
+
+1. **Keep a settled-decisions list** outside the loop. When the user or you accept a direction, write it down and pass it to the critic as constraints: "these choices are settled, judge everything else." This preserves fresh context on *quality* while stopping it relitigating *direction*.
+2. **Prefer the comparative prompt.** Ranking your screenshot against 4 professional references resists this failure far better than gap-counting, because the bar is external and fixed rather than regenerated each run. If you have references, use that variant — this is the concrete reason it's rated "Best" above.
+3. **Diff against the previous screenshot yourself.** The critic cannot see that its new gap 3 was created by fixing its old gap 2. In the observed run, chasing "make it bleed off the trim" truncated the wordmark, and mobile wrapped it mid-word. Only the orchestrator can catch a regression like that — compare before and after every iteration, and treat a new fault in previously-fine territory as a stop signal, not a finding.
+
 Grade the critic's own prompt on this scale:
 - Bad: "judge whether this looks beautiful" — subjective, wild variance run to run.
 - OK: "review the aesthetic being attempted, imagine how a top studio would execute it, score against that bar."
@@ -255,7 +268,7 @@ Use whatever browser your agent has. These are failure modes observed in practic
 |---|---|---|
 | Screenshot times out; looks like a hang | The browser pane is not displayed, so the page stops compositing frames | Front the tab first, then retry |
 | Capture is blank below the fold, fine at the top | Same compositing problem, at scroll offsets | Use a headless driver (Playwright, chrome-devtools) for below-the-fold sections |
-| Screenshot file cannot be read back | A relative filename resolved inside the driver's own output directory | Pass an **absolute** path, into the session's scratchpad |
+| Screenshot file cannot be read back | A relative filename resolved inside the driver's own output directory | Pass an **absolute** path *inside the project root* — drivers are usually jailed to it, so a system temp or scratchpad path is rejected |
 | Page looks half-faded or empty | Captured mid scroll-reveal animation | Wait ~3s after load before capturing |
 | Design looks fine to you, critic disagrees wildly | You screenshotted a different state than it did | Pin both to the same URL and viewport |
 
