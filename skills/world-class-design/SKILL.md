@@ -245,9 +245,13 @@ Run 1–2 iterations first and check the score is actually climbing before commi
 
 Fresh context is what keeps the critic honest, and it is also what lets it reverse its own instruction. Combined with "name the biggest gaps" — which guarantees a list whatever the quality — the score tracks *how much it can find*, not whether the page improved. That run scored 5/10 twice across a large, genuine improvement.
 
+**The score is a triage tool, not a progress metric.** Confirmed on two different pages: one loop scored 5/10 twice, another 6/10 twice, and in both cases the page genuinely improved between iterations. Asked to name "the biggest gaps", a critic always produces a full list, so the number reflects how much it can find rather than how far you have come.
+
+**Measure gap turnover instead.** After each iteration ask: did the previous findings disappear, and are the new ones *finer-grained*? Iteration 1 complaining that a motif runs behind the primary CTA and iteration 2 complaining that two pills have the wrong corner radius is real progress at a flat score. The same findings recurring is genuinely stuck. Turnover is the signal; the score is not.
+
 Three defences:
 
-1. **Keep a settled-decisions list** outside the loop. When the user or you accept a direction, write it down and pass it to the critic as constraints: "these choices are settled, judge everything else." This preserves fresh context on *quality* while stopping it relitigating *direction*.
+1. **Keep a settled-decisions list** outside the loop. *Confirmed effective* — a second run with one showed no self-contradiction across iterations, where the run without one reversed its own instruction. When the user or you accept a direction, write it down and pass it to the critic as constraints: "these choices are settled, judge everything else." This preserves fresh context on *quality* while stopping it relitigating *direction*.
 2. **Prefer the comparative prompt.** Ranking your screenshot against 4 professional references resists this failure far better than gap-counting, because the bar is external and fixed rather than regenerated each run. If you have references, use that variant — this is the concrete reason it's rated "Best" above.
 3. **Diff against the previous screenshot yourself.** The critic cannot see that its new gap 3 was created by fixing its old gap 2. In the observed run, chasing "make it bleed off the trim" truncated the wordmark, and mobile wrapped it mid-word. Only the orchestrator can catch a regression like that — compare before and after every iteration, and treat a new fault in previously-fine territory as a stop signal, not a finding.
 
