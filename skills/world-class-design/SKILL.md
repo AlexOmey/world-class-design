@@ -173,22 +173,27 @@ To find one, run the three-step ideation ladder in the prompt library: broad sha
 
 #### Seeds vary aesthetics. They do not vary structure.
 
-A seed reliably changes palette, typography, texture and motion. It does **not** touch the layout archetype — "landing page = vertical scroll, hero with headline left and visual right, sections stacked below" survives almost any aesthetic. In a four-variant run, three produced that same hero regardless of how far apart their palettes were, and freeing the copy helped only some of the time: of the two variants with a free hand, one broke the archetype and one still reproduced it.
+A seed reliably changes palette, typography, texture and motion. It does **not** touch the layout archetype — "landing page = vertical scroll, hero with headline left and visual right, sections stacked below" survives almost any aesthetic. In a four-variant run, three produced that same hero regardless of how far apart their palettes were. Of the two variants with a free hand on copy, one broke the archetype and one reproduced it anyway.
 
-Structure needs its own axis. **Assign each variant a different structural archetype, and name the default as forbidden.** Examples that are genuinely different topologies rather than restyled scrolls:
+**Never hand agents the existing information architecture as a numbered list.** This is the strongest rule in Stage 1 and the easiest to break by accident. An ordered list of sections looks like a neutral requirement and functions as the answer — it imports the current page's structure wholesale while you believe you have only specified content. Give an **unordered set of things a visitor must be able to learn**, and let the direction decide sequence, grouping and emphasis.
 
-- **No hero.** The page opens mid-argument, inside a working artifact; the reader assembles understanding by exploring rather than being pitched.
+Other ways briefs leak the default without appearing to: a locked copy deck (headline plus subhead plus eyebrow *is* a hero), section names carried over from the current page, reference screenshots shown to builders rather than held back for the critic, and any phrase like "keep the same sections".
+
+**Treat the default layout as a diagnostic, not a prohibition.** One variant arriving at headline-left/visual-right is fine — it is a good shape and may genuinely be right for that direction. A *batch* arriving there means your brief is leaking. Go find the leak; do not reach for a ban.
+
+Banning the shape forces variety rather than producing it, and this skill already documents where that leads: blocklisting a genre relocates the mode instead of widening it (see [the medium trap](references/prompt-library.md#-the-medium-trap--read-this-before-running-variants)). A batch that is diverse because you forbade the alternative is not evidence the process works.
+
+If the process is working, a generic result should be **surprising**. When one shows up, read it as a signal that a seed did not take or a brief leaked — that is information about your setup, and it is more valuable than the variant you would have forced instead.
+
+**To explore topology deliberately, assign archetypes rather than prohibitions.** Give different variants different structural starting points and let each commit:
+
+- **No hero** — the page opens mid-argument, inside a working artifact.
 - **The page is an instance of what the product makes** — a report, a board, a session, a receipt — rather than a page describing it.
-- **Non-vertical primary axis:** horizontal progression, a spatial layout you navigate, or a pinned pane beside a moving one.
-- **Single interactive artifact**, where the marketing argument is a by-product of using it.
-- **Inverted order:** price and objections first, the pitch last.
+- **Non-vertical primary axis** — horizontal progression, a spatial layout, or a pinned pane beside a moving one.
+- **Single interactive artifact**, where the argument is a by-product of using it.
+- **Inverted order** — price and objections first, the pitch last.
 
-Two supporting rules:
-
-- **Do not hand agents the existing information architecture as a numbered list.** That imports the default order under the guise of a requirement. Give an unordered set of things a visitor must be able to *learn*, and let the archetype decide sequence.
-- **Name the specific default you are banning.** "Be original" does nothing; "no headline-left/visual-right, no CTA above the fold, no problem→solution→how→price→CTA stack" does. Same mechanism as the medium trap — naming the attractor is what breaks it.
-
-When a non-default archetype is assigned, also require the variant to solve that archetype's known failures — affordance, keyboard reachability, reduced motion, and a real mobile equivalent rather than a collapse back to a plain stack.
+When you assign a non-default archetype, also require the variant to solve that archetype's known failures: affordance, keyboard reachability, reduced motion, and a real mobile equivalent rather than a collapse back to a plain stack.
 
 Ideas that sound like they will not work are the good ones. If a run fails, keep the prompt in the project and retry it when a stronger model ships.
 
