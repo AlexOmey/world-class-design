@@ -151,15 +151,15 @@ Do not reveal the string in the design; it is inspiration only.
 
 Asking a model to "be random" does not work — it predicts tokens that *sound* random. The randomness has to come from `head -c 64 /dev/urandom | base64` or similar.
 
-**Use word seeds for direction — numeric seeds converge whatever the encoding.** This is Technique 1's biggest failure mode, and it is not what it first appears to be.
+**Vary the derivation mode, not just the seed.** This is Technique 1's biggest failure mode, and it is not where it looks.
 
-A base64 blob looks like machine output you would print and file, and models read that connotation as direction: three independent base64 seeds gave three palettes but one genre (printed paper artifact). The obvious fix — vary the encoding — **does not work**. A follow-up run with hex, decimal and word seeds gave hex → glazed ceramics, decimals → glazed ceramics, words → boreal earth and firelight. Two numeric encodings, same new genre. Banning an attractor relocates the mode; it does not create variety.
+Fourteen runs across five seed sources — base64, hex, decimals, dictionary words, Wikipedia titles, emoji — all produced the same register: a physical artifact or measuring instrument, rendered with hairline rules, uppercase mono micro-labels and one signal colour. Different nouns, one move. Four of those runs were the source procedure verbatim on a greenfield generic app, so this is not an artifact of redesigning live products.
 
-A numeric seed offers only structure, so the model supplies the semantics from its own prior every time. A word seed supplies meaning from outside the model — the entire point of seeding.
+The one run that broke the pattern changed the *instruction*, not the seed: asked to derive **atmosphere** — light, air, distance, time of day — instead of an object, it produced a page with no frames, rules or apparatus at all.
 
-> **`shuf -n 10 /usr/share/dict/words` for the genre; numbers for proportions, spacing and palette inside it.**
+The seed supplies entropy; the derivation instruction supplies genre. So give each variant a different lens — atmosphere, motion and behaviour, social register, material process, or the article's own structural reading. Full prompts: [the derivation trap](references/prompt-library.md#-the-derivation-trap--read-this-before-running-variants).
 
-Also add the medium-stripping line from [the prompt library](references/prompt-library.md#-the-medium-trap--read-this-before-running-variants).
+**What the technique does deliver:** every greenfield run escaped the AI default hard — no purple gradient, no glassmorphic hero, no text-left/graphic-right. That part of the source article's claim holds up cleanly.
 
 **Run 3–4 variants in parallel** as independent subagents — and mean it, see below. Present all of them to the user.
 

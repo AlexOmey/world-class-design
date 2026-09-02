@@ -80,42 +80,54 @@ COPY — FIDELITY MODE:
 
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
 
-### ⚠️ The medium trap — read this before running variants
+### ⚠️ The derivation trap — read this before running variants
 
-A base64 seed carries an aesthetic of its own. It *looks like* machine output you would print and file, and models read that connotation as design direction. Observed in a real 3-variant run: three independent `/dev/urandom` base64 seeds produced three different palettes but **one genre** — printed paper artifact. Two of the three agents said so unprompted:
+**The seed supplies entropy. The derivation instruction supplies genre.** Changing the seed moves palette, metaphor and detail. It does not move register. Changing how you ask the model to *read* the seed moves register completely.
 
-> "it's base64 — machine text you'd print out and file"
-> "base64 itself = machine-encoded text → the overall conceit: this is a press proof sheet"
+Fourteen runs, five seed sources:
 
-The entropy was real. The framing collapsed it.
+| Condition | Seed | Derivation | Register |
+|---|---|---|---|
+| Greenfield, this procedure verbatim (n=4) | base64 | structural | instrument / editorial print |
+| Live product (n=3) | base64 | structural | printed paper artifact |
+| Live product (n=2) | hex, decimals | structural | glazed ceramics |
+| Live product (n=3) | dictionary words | semantic | antiquarian craft |
+| Live product (n=2) | Wikipedia, emoji | semantic | telemetry board, tabbed cards |
+| Live product (n=1) | Wikipedia | **atmosphere** | dusk over open ground, no artifact |
 
-**Changing the encoding alone does not fix this — it relocates the mode.** A follow-up run used hex, decimal and word seeds, plus an explicit ban on the paper genre. Result: hex → glazed ceramics, decimals → glazed ceramics, words → boreal earth and firelight. Two different numeric encodings independently landed on the *same* new genre. Banning one attractor moves the model to the next one; it does not create variety.
+Every run but the last produced a *thing* — a plate, a sheet, a core, a board, a wall, a dial. Different nouns, one move.
 
-The reason: a numeric seed offers only **structure** — runs, ratios, clusters. The model must supply the semantics itself, and it draws them from the same prior every time. A **semantic seed supplies meaning from outside the model**, which is the entire point of seeding.
+**The greenfield control matters here.** Four runs of the source procedure verbatim, on a generic app with no existing site, no copy and no codebase, converged the same way. So this is not an artifact of redesigning live products, and it is not caused by base64 "looking like" a printout. Asking a model to derive design decisions from structure privileges *measurement* as the organising idea, and the visual language of measurement is rules, ticks, tabular numerals and instruments.
 
-> **Prefer word seeds for direction. Use numeric seeds for detail.** The strongest combination is a word seed for the genre, and a numeric seed for proportions, spacing and palette derivation inside it.
+**What the technique does deliver, reliably:** all four greenfield runs escaped the default hard. No purple gradient, no glassmorphic hero, no text-left/graphic-right. One said so explicitly. That is exactly what the source article claims, and it holds.
 
-Two further fixes, use both:
-
-**1. Strip the medium in the prompt.** Add this line to the procedure:
+**So: vary the derivation mode across variants, not just the seed.** Give each variant a different lens on the same kind of seed:
 
 ```
-Treat the string as abstract data. It has no medium, genre, or aesthetic of
-its own — the fact that it looks like machine output must not influence the
-direction. Read structure from it (runs, ratios, digit clusters, hex-legal
-pairs), not connotation.
+Derive ATMOSPHERE: light, colour temperature, air, distance, weather, time
+of day, sound, speed, spatial feeling. Not an object — do not make the page
+a physical thing with edges, frames, plates or margin apparatus.
+```
+```
+Derive MOTION AND BEHAVIOUR: how things enter, settle, resist, accelerate,
+what has weight, what is elastic. Let the page's behaviour carry the
+identity and keep the static composition quiet.
+```
+```
+Derive SOCIAL REGISTER: who is speaking, to whom, how formally, at what
+distance, with what status. Let voice and typographic manners carry it.
+```
+```
+Derive MATERIAL PROCESS: not the finished object but the process that makes
+it — the pour, the weld, the edit, the erosion. What does the making leave
+behind?
+```
+```
+Derive STRUCTURE (the source article's default): read subpatterns, runs,
+ratios and special numbers, and let them set proportion, grid and palette.
 ```
 
-**2. Vary the encoding across variants**, so no single format's connotation dominates the batch:
-
-```bash
-head -c 32 /dev/urandom | base64                        # variant A
-head -c 16 /dev/urandom | xxd -p                        # variant B — hex
-od -An -tu1 -N16 /dev/urandom | tr -s ' ' ,             # variant C — decimals
-shuf -n 8 /usr/share/dict/words | tr '\n' ' '           # variant D — words
-```
-
-The word-list seed is the strongest corrective: it has no machine-artifact connotation at all, and it pushes the model toward semantic rather than typographic association.
+The structural mode is the article's own and it works — it is simply one lens, and running four variants through the same lens is why they rhyme. Vary the lens and they stop.
 
 Technique reference: [String Seed of Thought, Sakana AI](https://sakana.ai).
 
