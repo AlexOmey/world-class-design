@@ -83,33 +83,44 @@ When a capability is missing, say so and carry on with the rest. **Never paper o
 
 ---
 
-## Copy integrity (applies to every stage)
+## Copy: two modes, by stage
 
-**Copy is content, not design material.** The design adapts to the words; the words do not adapt to the design. Put this in every build and refine prompt — without it, agents rewrite freely and you lose the user's voice while they are looking at colours.
+**Locking copy locks structure.** A headline, subhead, eyebrow and section order together *are* the information architecture. Freeze the strings and a variant can only reskin the page you already have — this is the single biggest brake on Stage 1 variety, and it is easy to impose by accident while trying to protect the user's voice.
 
-| Operation | Allowed? |
-|---|---|
-| Ship supplied copy verbatim | Yes — the default |
-| Omit a supplied line entirely | Yes, if the design genuinely has no room |
-| Truncate / trim a supplied line | Yes, sparingly, if length breaks the layout |
-| Rewrite, paraphrase, or "punch up" | **No** |
-| Invent new visible text | **No** |
+Resolve it by stage. The source article's own framing: model copy is Lorem ipsum — scaffolding that lets you see the structure, rewritten by a human before it ships.
 
-**The leak is almost never the body copy — it's the chrome.** Agents faithfully paste the bio and then invent an eyebrow, a section label, a caption, a tagline, a CTA microcopy line, a footer slug. Observed in a single run: `The Weekly Dispatch`, `A decade on one thread`, `I ship AI products and write down what happens. Based in London, usually in an editor.` None were briefed.
+### Exploration mode — Stages 1 and 2
 
-That is two failures at once: it overwrites the user's voice, and invented eyebrow labels are the **first row of [ai-tells.md](references/ai-tells.md)** — the most reliable AI tell there is.
+Copy is **malleable**. Rewrite headlines, merge, split or reorder sections, cut chrome, change length and register. Restructuring the message is part of the design proposal.
 
-The rule is not "never write a string" — a design with a hole where a nav label should be is just broken. It is **never write one silently**:
+The invariant is the **message architecture**, not the strings. Brief each variant with what every section has to *accomplish* — "establish what this is, for whom, and the core promise" — not with the sentences that currently accomplish it. Give agents a message spec, not a copy deck.
 
-- **Functional labels are fine.** `About`, `Watch`, `Featured Work`, a form's `Email` — text that names a thing the user interacts with. Write them.
-- **Decorative editorial is not.** Eyebrows above headings that restate the heading, invented taglines, section kickers, footer slugs, made-up product names for the newsletter. `The Weekly Dispatch` and `A decade on one thread` are this. Reuse supplied text, or drop the element.
-- **Anything you write, you mark.** List it under `PROPOSED COPY` in your report so the user approves or rewrites it. It is theirs to decide under Technique 8, not yours to ship.
+All exploration copy is provisional and must be marked as such. It is a proposal for the user to accept, edit or reject at the checkpoint.
 
-The test: if the string carries *voice*, it is the user's. If it carries *function*, it is the design's.
+### Fidelity mode — Stage 3
 
-**The seed must not reach the page.** "Don't reveal the string" is too narrow — the leak is the seed's *derived vocabulary* surfacing as rendered text. A run seeded toward weaving shipped a visible label reading `Warp & Weft · London`. Class names, CSS comments and file names may use the seed's vocabulary freely; **anything a visitor can read may not**.
+Copy **locks** to the approved source. Every deviation the exploration introduced is either reverted or explicitly approved by the user. Technique 8 is where a human writes the final words; nothing ships on an implementer's phrasing.
 
-**Report every deviation.** End each build with an explicit list of copy changed, trimmed, or omitted. Copy is the user's call under Technique 8 — an implementer may propose a cut, never decide one.
+### Never invented, in either mode: facts
+
+Voice is malleable. Truth is not. No agent may invent or alter:
+
+- prices, plans, billing terms, guarantees or refund policy
+- capabilities, integrations, model names, compliance or security claims
+- metrics, benchmarks, customer counts, funding
+- customer names, logos, quotes or testimonials
+
+Take these from the codebase or the approved source, verbatim, and cite where each came from. An agent that writes "USD 29/mo" or "SOC 2 compliant" from imagination has created a legal problem, not a design. When a fact appears in two places that disagree, **stop and report the conflict** rather than picking one.
+
+### Two rules that hold in both modes
+
+**The seed must not reach the page.** "Don't reveal the string" is too narrow — the leak is the seed's *derived vocabulary* surfacing as rendered text. A run seeded toward weaving shipped a visible label reading `Warp & Weft · London`. Class names, CSS comments and filenames may use the seed freely; **anything a visitor can read may not**.
+
+**Report every copy decision.** End each build with a `PROPOSED COPY` list: what was rewritten, cut, merged, or newly written, and where each fact came from. In exploration this is the proposal; in fidelity mode it is the approval queue.
+
+### When Technique 7 and the user's copy disagree
+
+Technique 7 says cut the eyebrow; the approved copy deck contains one. In **exploration** the variant cuts it freely — that is a structural proposal. In **fidelity mode** it is not the implementer's call: flag it as a recommendation and let the user decide. Observed in a real run — a variant correctly kept an eyebrow reading `AGENTIC MARKET RESEARCH & PRODUCT VALIDATION` because copy was locked, faithfully reproducing row one of [ai-tells.md](references/ai-tells.md).
 
 ---
 

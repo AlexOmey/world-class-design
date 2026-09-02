@@ -21,30 +21,51 @@ Don't reveal the string in the design. It's only for your inspiration.
 
 Run 3–4 of these concurrently as independent subagents. Each gets its own seed and never sees the others.
 
-**Append this copy block to every build prompt** (see [Copy integrity](../SKILL.md#copy-integrity-applies-to-every-stage)). Without it, agents invent chrome text and leak the seed's vocabulary into visible labels:
+**Append the right copy block to every build prompt** (see [Copy: two modes](../SKILL.md#copy-two-modes-by-stage)). Which one depends on the stage — using the fidelity block during exploration is the most common way to strangle Stage 1 variety, because locking the strings locks the structure.
+
+**Exploration (Stages 1–2) — copy is scaffolding:**
 
 ```
-COPY RULES — these override any design consideration:
+COPY — EXPLORATION MODE:
 
-- Every string I supplied ships VERBATIM. Do not rewrite, paraphrase,
+- Treat existing copy as a message spec, not a script. You may rewrite
+  headlines, merge or split or reorder sections, cut chrome, and change
+  length and register. Restructuring the message is part of your proposal.
+- What each section must still ACCOMPLISH is fixed; the sentences are not.
+- FACTS ARE NEVER INVENTED OR ALTERED. Prices, plans, guarantees, refund
+  terms, capabilities, integrations, model names, compliance claims,
+  metrics, customer names and quotes come from the codebase or the
+  approved source, verbatim. Cite where you got each one. If two sources
+  disagree, STOP and report the conflict — do not pick one.
+- The seed must not reach the page. Its derived vocabulary must not appear
+  in ANY string a visitor can read. Class names, CSS comments and
+  filenames may use it freely.
+- End with a PROPOSED COPY list: everything you rewrote, cut, merged or
+  wrote fresh, and the source of every fact. All of it is provisional and
+  subject to approval.
+```
+
+**Fidelity (Stage 3) — copy is the user's:**
+
+```
+COPY — FIDELITY MODE:
+
+- Every approved string ships VERBATIM. Do not rewrite, paraphrase,
   shorten or "punch up" copy to suit the layout. Adapt the design to the
   words, not the words to the design.
-- If a line genuinely does not fit, you may omit it entirely or trim it.
-  You may not reword it. List anything you omit or trim.
-- Do not invent copy SILENTLY. Functional labels the design needs are
-  fine — "About", "Watch", "Featured Work", a field's "Email". Decorative
-  editorial is not: eyebrows that restate the heading, invented taglines,
-  section kickers, footer slugs, made-up names for the newsletter. Reuse
-  supplied text or drop the element. Invented eyebrow labels are the
-  single most common AI-design tell.
-  The test: if a string carries VOICE it is mine; if it carries FUNCTION
-  it is the design's.
-- The seed must not reach the page. Its derived vocabulary must not
-  appear in ANY string a visitor can read. Class names, CSS comments and
-  filenames may use it freely; rendered text may not.
-- End your report with a PROPOSED COPY list: every string you changed,
-  trimmed, omitted, or wrote yourself, so I can approve or rewrite it.
-  If that list is empty, say so.
+- If a line genuinely does not fit you may omit or trim it. You may not
+  reword it. List anything you omit or trim.
+- Do not invent copy silently. Functional labels the design needs are
+  fine — "Pricing", "FAQ", a field's "Email". Decorative editorial is not:
+  eyebrows that restate the heading, invented taglines, section kickers,
+  footer slugs, made-up product names.
+  The test: if a string carries VOICE it is the user's; if it carries
+  FUNCTION it is the design's.
+- If an approved string is itself an AI tell (an eyebrow that restates the
+  heading, say), do NOT cut it. Flag it as a recommendation and let the
+  user decide.
+- FACTS ARE NEVER INVENTED OR ALTERED — same list as exploration mode.
+- End with a PROPOSED COPY list for approval.
 ```
 
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
