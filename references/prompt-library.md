@@ -23,6 +23,35 @@ Run 3–4 of these concurrently as independent subagents. Each gets its own seed
 
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
 
+### ⚠️ The medium trap — read this before running variants
+
+A base64 seed carries an aesthetic of its own. It *looks like* machine output you would print and file, and models read that connotation as design direction. Observed in a real 3-variant run: three independent `/dev/urandom` base64 seeds produced three different palettes but **one genre** — printed paper artifact. Two of the three agents said so unprompted:
+
+> "it's base64 — machine text you'd print out and file"
+> "base64 itself = machine-encoded text → the overall conceit: this is a press proof sheet"
+
+The entropy was real. The framing collapsed it. Two fixes, use both:
+
+**1. Strip the medium in the prompt.** Add this line to the procedure:
+
+```
+Treat the string as abstract data. It has no medium, genre, or aesthetic of
+its own — the fact that it looks like machine output must not influence the
+direction. Read structure from it (runs, ratios, digit clusters, hex-legal
+pairs), not connotation.
+```
+
+**2. Vary the encoding across variants**, so no single format's connotation dominates the batch:
+
+```bash
+head -c 32 /dev/urandom | base64                        # variant A
+head -c 16 /dev/urandom | xxd -p                        # variant B — hex
+od -An -tu1 -N16 /dev/urandom | tr -s ' ' ,             # variant C — decimals
+shuf -n 8 /usr/share/dict/words | tr '\n' ' '           # variant D — words
+```
+
+The word-list seed is the strongest corrective: it has no machine-artifact connotation at all, and it pushes the model toward semantic rather than typographic association.
+
 Technique reference: [String Seed of Thought, Sakana AI](https://sakana.ai).
 
 ---

@@ -99,7 +99,9 @@ Do not reveal the string in the design; it is inspiration only.
 
 Asking a model to "be random" does not work — it predicts tokens that *sound* random. The randomness has to come from `head -c 64 /dev/urandom | base64` or similar.
 
-**Run 3–4 variants in parallel**, each with its own seed, as independent subagents so the seeds do not contaminate each other. Present all of them to the user.
+**Vary the seed encoding across variants, and tell the model the seed has no medium of its own.** A base64 blob looks like machine output you would print and file, and models read that connotation as direction — in a real 3-variant run, three independent seeds produced three palettes but one genre (printed paper artifact). Use base64 / hex / decimals / random dictionary words across the batch, and add the medium-stripping line from [the prompt library](references/prompt-library.md#-the-medium-trap--read-this-before-running-variants). This is the single biggest failure mode of Technique 1.
+
+**Run 3–4 variants in parallel**, each with its own seed and encoding, as independent subagents so the seeds do not contaminate each other. Present all of them to the user.
 
 ### Technique 2: Ambitious briefs
 
@@ -132,6 +134,13 @@ Each iteration:
 2. Spawn the critic with the **exact same prompt every time** (verbatim text in the prompt library).
 3. Apply its feedback.
 4. Repeat.
+
+**Screenshot mechanics — three things that will bite you:**
+
+- **You cannot hand an image to a subagent.** The critic has to capture its own screenshot, so its prompt must include the navigation steps. Isolation is preserved by *forbidding it to read source code*, not by withholding the browser.
+- **Front the tab before screenshotting.** A hidden browser pane stops compositing frames and screenshots fail with a timeout that looks like a hang. Call the tab-select tool first.
+- **Don't use Playwright MCP for this loop.** It writes screenshots inside its own sandbox where neither you nor the critic can read them back. Use the session's browser pane.
+- **Wait ~3s after load** if the page has scroll-reveal animation, or you will critique a half-faded page. This one produced a visibly wrong first capture in testing.
 
 **Stop at 9/10, and never tell the critic that 9 is the target** — a critic that knows the bar will drift to meet it. Hold the threshold in the orchestrator.
 
