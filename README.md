@@ -25,7 +25,29 @@ Then invoke it with `/world-class-design`, or just describe the problem — it t
 claude --plugin-dir /path/to/world-class-design
 ```
 
-**Using another agent?** The skill is plain Markdown at `skills/world-class-design/SKILL.md` and works in anything that reads `SKILL.md`-style skills. Copy that directory wherever your tool expects skills to live. The preflight script is POSIX `sh` with no dependencies.
+### Codex
+
+Codex implements the same [Agent Skills standard](https://agentskills.io), so this repo works there too:
+
+```bash
+codex plugin marketplace add AlexOmey/world-class-design
+codex plugin add world-class-design
+```
+
+Invoke with `$world-class-design`, or let it trigger on its description. Working inside a clone needs nothing at all — the `.agents/skills` symlink makes it auto-discovered. To install it globally without plugin machinery:
+
+```bash
+git clone https://github.com/AlexOmey/world-class-design.git
+mkdir -p ~/.agents/skills && ln -s "$PWD/world-class-design/skills/world-class-design" ~/.agents/skills/world-class-design
+```
+
+Note Codex scans `~/.agents/skills`, **not** `~/.codex/skills`.
+
+### Any other agent
+
+The skill is plain Markdown at `skills/world-class-design/SKILL.md` and works in anything that reads `SKILL.md`-style skills. Copy that directory wherever your tool expects skills to live. The preflight script is POSIX `sh` with no dependencies.
+
+**One substitution to make outside Claude Code:** Technique 3 needs a *fresh context on a bigger model* for the design critic. Claude Code gets that from its subagent tool with a model override; elsewhere, shell out to a clean session (`codex exec …`, `claude -p …`) to get the same isolation. That isolation is the mechanism — without it the critic grades its own work.
 
 ## First run
 
@@ -53,8 +75,10 @@ The two that carry most of the weight:
 ## Layout
 
 ```
-.claude-plugin/plugin.json       plugin manifest
-.claude-plugin/marketplace.json  makes this repo its own marketplace
+.claude-plugin/                  Claude Code plugin + marketplace manifests
+.codex-plugin/plugin.json        Codex plugin manifest
+.agents/skills -> ../skills      Codex skill discovery
+.agents/plugins/marketplace.json Codex marketplace catalogue
 skills/world-class-design/
   SKILL.md                       the process, checkpoints, degradation rules
   scripts/preflight.sh           capability probe — read-only, POSIX sh

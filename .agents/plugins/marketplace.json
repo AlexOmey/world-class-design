@@ -1,0 +1,14 @@
+{
+  "name": "world-class-design",
+  "description": "Design skills for AI coding agents, from Alex Omeyer.",
+  "plugins": [
+    {
+      "name": "world-class-design",
+      "source": { "path": "./" },
+      "interface": {
+        "displayName": "World-Class Design",
+        "shortDescription": "Get distinctive, non-generic design out of AI coding agents"
+      }
+    }
+  ]
+}

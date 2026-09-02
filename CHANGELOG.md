@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — unreleased
+
+### Added
+- Codex support. Codex implements the same Agent Skills standard
+  (agentskills.io), so `SKILL.md` ports unchanged — but it scans
+  `.agents/skills`, which this repo did not have. Adds a `.agents/skills`
+  symlink for zero-config repo pickup, `.codex-plugin/plugin.json`, and
+  `.agents/plugins/marketplace.json`, so `codex plugin marketplace add` works
+  the same way `/plugin marketplace add` does in Claude Code.
+- README documents the one substitution needed outside Claude Code: the
+  design critic needs a fresh context on a bigger model, which other tools
+  reach by shelling out to a clean session rather than via a subagent tool.
+
 ## 0.1.1 — unreleased
 
 ### Fixed
