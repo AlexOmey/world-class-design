@@ -1,0 +1,13 @@
+{
+  "name": "world-class-design",
+  "description": "An end-to-end process for getting distinctive, non-generic design out of AI coding agents: seed strings for real variety, ambitious briefs, a design-critic subagent scoring loop, image and video generation for texture, then subtractive polish.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Alex Omeyer",
+    "url": "https://github.com/AlexOmey"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/AlexOmey/world-class-design",
+  "repository": "https://github.com/AlexOmey/world-class-design",
+  "keywords": ["design", "ui", "frontend", "creative", "ai-slop", "critique"]
+}

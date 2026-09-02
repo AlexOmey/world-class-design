@@ -8,18 +8,29 @@ Adapted from [How to turn your AI into a world-class designer](https://www.lenny
 
 ## Install
 
-```bash
-git clone <this-repo> ~/.claude/skills/world-class-design
+This repo is both a plugin and its own marketplace, so it installs in two commands inside Claude Code:
+
+```
+/plugin marketplace add AlexOmey/world-class-design
+```
+```
+/plugin install world-class-design@world-class-design
 ```
 
-Then invoke it in Claude Code with `/world-class-design`, or just describe the problem — it triggers on things like "this looks like AI slop" or "why does my design look generic".
+Then invoke it with `/world-class-design`, or just describe the problem — it triggers on things like "this looks like AI slop" or "why does my design look generic".
 
-Works in any agent that reads `SKILL.md`-style skills; the preflight script is plain POSIX `sh`.
+**Working on the skill itself?** Point Claude Code at your checkout instead of installing:
+
+```bash
+claude --plugin-dir /path/to/world-class-design
+```
+
+**Using another agent?** The skill is plain Markdown at `skills/world-class-design/SKILL.md` and works in anything that reads `SKILL.md`-style skills. Copy that directory wherever your tool expects skills to live. The preflight script is POSIX `sh` with no dependencies.
 
 ## First run
 
 ```bash
-sh scripts/preflight.sh --verify
+sh skills/world-class-design/scripts/preflight.sh --verify
 ```
 
 Reports what's available and exits `0` ready / `10` degraded / `20` blocked. Nothing is required beyond `curl` — image and video generation are enrichments, and the skill degrades honestly without them rather than substituting gradients.
@@ -42,11 +53,14 @@ The two that carry most of the weight:
 ## Layout
 
 ```
-SKILL.md                      the process, checkpoints, and degradation rules
-scripts/preflight.sh          capability probe — read-only, POSIX sh
-references/prompt-library.md  verbatim prompts for all eight techniques
-references/ai-tells.md        overused-pattern → better-alternative checklist
-references/fal-video.md       fal.ai setup, API, model slugs, both video pipelines
+.claude-plugin/plugin.json       plugin manifest
+.claude-plugin/marketplace.json  makes this repo its own marketplace
+skills/world-class-design/
+  SKILL.md                       the process, checkpoints, degradation rules
+  scripts/preflight.sh           capability probe — read-only, POSIX sh
+  references/prompt-library.md   verbatim prompts for all eight techniques
+  references/ai-tells.md         overused-pattern → better-alternative checklist
+  references/fal-video.md        fal.ai setup, API, model slugs, video pipelines
 ```
 
 ## A note on the fal.ai reference

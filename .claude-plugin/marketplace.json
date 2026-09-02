@@ -1,0 +1,15 @@
+{
+  "name": "world-class-design",
+  "description": "Design skills for AI coding agents, from Alex Omeyer.",
+  "owner": {
+    "name": "Alex Omeyer",
+    "url": "https://github.com/AlexOmey"
+  },
+  "plugins": [
+    {
+      "name": "world-class-design",
+      "source": "./",
+      "description": "Get distinctive, non-generic design out of AI coding agents. Three stages, eight techniques, three human checkpoints."
+    }
+  ]
+}
