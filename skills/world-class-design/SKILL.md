@@ -271,8 +271,23 @@ Coding agents reach for gradients, blobs and CSS shapes because those are code. 
 Check for a route in this order:
 
 1. **A built-in image generation tool** in the current agent, if it has one. Agents that have these routinely under-use them until told to.
-2. **Codex CLI** — `command -v codex`. If present: "use the Codex CLI to generate images, billing my subscription rather than an API key." No marginal cost where the user has a ChatGPT subscription.
+2. **Codex CLI** — `command -v codex`. No marginal cost where the user has a ChatGPT subscription. Verified working; the recipe has two non-obvious parts:
+
+   ```bash
+   codex exec --skip-git-repo-check "Generate one image using your built-in \
+     image generation: <prompt>. Report the exact path you saved it to."
+   # then retrieve it yourself:
+   cp "$(ls -t ~/.codex/generated_images/*/*.png | head -1)" ./public/asset.png
+   ```
+
+   **Do not ask it to save to your path.** Codex runs its sandbox read-only, so a requested output path fails with "Operation not permitted" *after* the image is generated. It writes to `~/.codex/generated_images/<session>/exec-<uuid>.png`; copy from there. Note also that `command -v codex` proves presence, not capability — the preflight reports the route as available without verifying it can generate.
 3. **An OpenAI or Gemini key** the user supplies. If they paste one, write it to a gitignored `.env.agents`, note in `CLAUDE.md`/`AGENTS.md` that it is dev-only, and never let it reach shipped code.
+
+**Technique 4 does not apply to every design, and forcing it causes harm.** Generated imagery is for texture, atmosphere and illustration. It must never stand in for evidence:
+
+- **Never generate product screenshots, UI captures, dashboards, charts or anything a visitor would read as a record of a real thing.** A generated screenshot of a real product is fabricated evidence, the same failure as inventing research findings. Those assets can only be *re-captured*, never generated — and if the real ones are poor, say so and leave them.
+- A page whose credibility rests on real artefacts may have almost no legitimate surface for this technique. Say that rather than decorating it.
+- Where it does apply: material texture (paper fibre, grain, surface), atmospheric fields, abstract marks, and share/OG imagery.
 
 If none are available, say so and continue without images rather than silently falling back to gradients.
 
