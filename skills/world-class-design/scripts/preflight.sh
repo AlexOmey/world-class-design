@@ -141,14 +141,29 @@ if [ -f "$HOME/.config/fal/env" ]; then
   [ "$perms" = "600" ] || note "perms" "~/.config/fal/env is mode $perms — chmod 600 recommended"
 fi
 
-# Loud check: a fal/openai key sitting in an app env file is a production leak.
+# A key in an app env file is only a leak if the APP doesn't use it. Plenty of
+# products legitimately call OpenAI or Gemini at runtime — never block those.
+app_uses_var() {
+  _v="$1"
+  if git rev-parse --git-dir >/dev/null 2>&1 &&
+     git grep -qI "$_v" -- ':!*.env*' ':!*.md' 2>/dev/null; then
+    return 0
+  fi
+  grep -rqI --exclude-dir=node_modules --exclude-dir=.next --exclude-dir=.git \
+    --exclude='.env*' --exclude='*.md' "$_v" . 2>/dev/null
+}
+
 for f in .env .env.local .env.production .env.development; do
   [ -f "$f" ] || continue
   for k in FAL_KEY OPENAI_API_KEY GEMINI_API_KEY; do
-    if grep -qE "^[[:space:]]*$k[[:space:]]*=" "$f" 2>/dev/null; then
-      gap "leak-risk" "$k is in $f — that file is loaded by the APP at build/runtime."
-      printf '                  Move it to ~/.config/fal/env (personal) or .env.agents (project-scoped).\n'
-      gaps_core=$((gaps_core+1))
+    grep -qE "^[[:space:]]*$k[[:space:]]*=" "$f" 2>/dev/null || continue
+    if app_uses_var "$k"; then
+      note "app-key" "$k in $f is referenced by your source — an app key, correct where it is"
+    else
+      gap "stray-key" "$k is in $f but nothing in your source reads it."
+      printf '                  If you put it there for the design agent, move it: app env files\n'
+      printf '                  ship to production via vercel env push and hosting dashboards.\n'
+      gaps_opt=$((gaps_opt+1))
     fi
   done
 done

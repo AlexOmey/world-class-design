@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1 — unreleased
+
+### Fixed
+- Preflight hard-blocked projects that legitimately use OpenAI or Gemini at
+  runtime. The leak check assumed any `OPENAI_API_KEY` in `.env.local` was a
+  stray design-time key; a real product referencing it in ten source files got
+  `BLOCKED` on a completely correct setup. The check now greps the codebase:
+  a key the source reads is reported as an app key and passes, a key nothing
+  reads warns (exit 10) instead of blocking. Found by running the skill against
+  a second, unfamiliar project.
+
 ## 0.1.0 — unreleased
 
 First packaged version. Adapted from Anshu Chimala's "How to turn your AI into a
