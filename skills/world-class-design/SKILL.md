@@ -182,6 +182,8 @@ Vague briefs get median output. Name a concrete world:
 
 To find one, run the three-step ideation ladder in the prompt library: broad shallow list → the user reacts to favourites in their own words → model sharpens → model writes the build prompt.
 
+> **Attribution:** the alphanumeric seed procedure is the source article's. The alternative seed sources and the structural axis below are this repo's findings from running it against live products — see [what is his and what is ours](references/prompt-library.md#what-is-the-source-articles-and-what-is-this-repos).
+
 #### Seeds vary aesthetics. They do not vary structure.
 
 A seed reliably changes palette, typography, texture and motion. It does **not** touch the layout archetype — "landing page = vertical scroll, hero with headline left and visual right, sections stacked below" survives almost any aesthetic. In a four-variant run, three produced that same hero regardless of how far apart their palettes were. Of the two variants with a free hand on copy, one broke the archetype and one reproduced it anyway.

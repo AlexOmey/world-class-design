@@ -68,6 +68,16 @@ COPY — FIDELITY MODE:
 - End with a PROPOSED COPY list for approval.
 ```
 
+> ### What is the source article's, and what is this repo's
+>
+> **The four-step alphanumeric procedure above is the source article's, reproduced faithfully.** So is the derivation instruction — read subpatterns and special numbers out of the string.
+>
+> **Everything below this box is this repo's findings from running it**, not the author's advice: the medium trap, the alternative seed sources, the preference for word seeds, and the structural-archetype axis. Do not read "prefer word seeds" as his recommendation. He proposes an alphanumeric string and nothing else.
+>
+> **What the article claims** is that outputs become much more varied — different colour schemes, fonts and ideas. It does **not** claim the structure varies. So the finding that seeds leave the layout archetype untouched extends his claim rather than contradicting it; it measures against a bar he did not set.
+>
+> **The testing conditions also differ, and that probably matters.** The article demonstrates the technique greenfield: a generic productivity app, no existing site, no approved copy, no codebase. Every run behind the findings below was a *redesign of a live product* with an existing landing page, real copy and section components sitting in the same repo. That existing page is itself a strong attractor, and it is a plausible reason these runs collapsed harder than the article's did. Sample sizes are small on both sides — four outputs shown in the post, three to four per condition here.
+
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
 
 ### ⚠️ The medium trap — read this before running variants
