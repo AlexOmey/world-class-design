@@ -171,6 +171,25 @@ Vague briefs get median output. Name a concrete world:
 
 To find one, run the three-step ideation ladder in the prompt library: broad shallow list → the user reacts to favourites in their own words → model sharpens → model writes the build prompt.
 
+#### Seeds vary aesthetics. They do not vary structure.
+
+A seed reliably changes palette, typography, texture and motion. It does **not** touch the layout archetype — "landing page = vertical scroll, hero with headline left and visual right, sections stacked below" survives almost any aesthetic. In a four-variant run, three produced that same hero regardless of how far apart their palettes were, and freeing the copy helped only some of the time: of the two variants with a free hand, one broke the archetype and one still reproduced it.
+
+Structure needs its own axis. **Assign each variant a different structural archetype, and name the default as forbidden.** Examples that are genuinely different topologies rather than restyled scrolls:
+
+- **No hero.** The page opens mid-argument, inside a working artifact; the reader assembles understanding by exploring rather than being pitched.
+- **The page is an instance of what the product makes** — a report, a board, a session, a receipt — rather than a page describing it.
+- **Non-vertical primary axis:** horizontal progression, a spatial layout you navigate, or a pinned pane beside a moving one.
+- **Single interactive artifact**, where the marketing argument is a by-product of using it.
+- **Inverted order:** price and objections first, the pitch last.
+
+Two supporting rules:
+
+- **Do not hand agents the existing information architecture as a numbered list.** That imports the default order under the guise of a requirement. Give an unordered set of things a visitor must be able to *learn*, and let the archetype decide sequence.
+- **Name the specific default you are banning.** "Be original" does nothing; "no headline-left/visual-right, no CTA above the fold, no problem→solution→how→price→CTA stack" does. Same mechanism as the medium trap — naming the attractor is what breaks it.
+
+When a non-default archetype is assigned, also require the variant to solve that archetype's known failures — affordance, keyboard reachability, reduced motion, and a real mobile equivalent rather than a collapse back to a plain stack.
+
 Ideas that sound like they will not work are the good ones. If a run fails, keep the prompt in the project and retry it when a stronger model ships.
 
 ### ⏸ Checkpoint 1
