@@ -130,17 +130,14 @@ The building agent cannot judge its own work — it sees its code and its reason
 - **Critic:** a *fresh* subagent on a bigger model, given **only the screenshot**. No code, no implementation notes, no earlier critiques, no score history.
 
 Each iteration:
-1. Screenshot the current state. Check a 390px-wide viewport too — most layout faults surface there first.
+1. **Screenshot the current state**, using whatever browser automation you have. What matters is the artefact, not the tool: the whole page top to bottom at desktop width, and the same again at 390px. Most layout faults surface at 390px first.
 2. Spawn the critic with the **exact same prompt every time** (verbatim text in the prompt library).
 3. Apply its feedback.
 4. Repeat.
 
-**Screenshot mechanics — three things that will bite you:**
+**The critic captures its own screenshots.** You cannot hand an image to a subagent, so its prompt must tell it how to reach the page. This does not weaken the isolation — that comes from *forbidding it to read source code*, not from withholding the browser. Give it the URL and the capture instructions, nothing else.
 
-- **You cannot hand an image to a subagent.** The critic has to capture its own screenshot, so its prompt must include the navigation steps. Isolation is preserved by *forbidding it to read source code*, not by withholding the browser.
-- **Front the tab before screenshotting.** A hidden browser pane stops compositing frames and screenshots fail with a timeout that looks like a hang. Call the tab-select tool first.
-- **Don't use Playwright MCP for this loop.** It writes screenshots inside its own sandbox where neither you nor the critic can read them back. Use the session's browser pane.
-- **Wait ~3s after load** if the page has scroll-reveal animation, or you will critique a half-faded page. This one produced a visibly wrong first capture in testing.
+If captures come back blank, truncated, or timed out, see [Troubleshooting screenshots](#troubleshooting-screenshots) at the end of this file before changing approach.
 
 **Stop at 9/10, and never tell the critic that 9 is the target** — a critic that knows the bar will drift to meet it. Hold the threshold in the orchestrator.
 
@@ -247,3 +244,19 @@ Hand the copy to the user. This step is theirs, not yours — flag it as the one
 - **Look at the render, not the diff.** A design fault is visible in a screenshot in one second and invisible in a code review for an hour.
 - **Do not optimise the score.** The critic score finds faults; it does not grant permission to ship. Past a point, pushing the number makes the page worse. The user decides.
 - **Keep the losers.** Save prompts that produced bad output in the project. Re-run them when a new model ships — that is how you know you are using the current ceiling.
+
+---
+
+## Troubleshooting screenshots
+
+Use whatever browser your agent has. These are failure modes observed in practice, not a required setup — skip this section unless captures are actually misbehaving.
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Screenshot times out; looks like a hang | The browser pane is not displayed, so the page stops compositing frames | Front the tab first, then retry |
+| Capture is blank below the fold, fine at the top | Same compositing problem, at scroll offsets | Use a headless driver (Playwright, chrome-devtools) for below-the-fold sections |
+| Screenshot file cannot be read back | A relative filename resolved inside the driver's own output directory | Pass an **absolute** path, into the session's scratchpad |
+| Page looks half-faded or empty | Captured mid scroll-reveal animation | Wait ~3s after load before capturing |
+| Design looks fine to you, critic disagrees wildly | You screenshotted a different state than it did | Pin both to the same URL and viewport |
+
+A headless driver is generally the more reliable choice for an automated loop — no visible window to go stale. Whatever you use, confirm the first capture is actually a faithful picture of the page before you start trusting scores built on it.
