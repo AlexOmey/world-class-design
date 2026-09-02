@@ -31,16 +31,20 @@ COPY RULES — these override any design consideration:
   words, not the words to the design.
 - If a line genuinely does not fit, you may omit it entirely or trim it.
   You may not reword it. List anything you omit or trim.
-- Do NOT invent new visible text. No eyebrow labels, section kickers,
-  captions, taglines, CTA microcopy, footer slugs or status pills beyond
-  what I supplied. If a slot has no copy, reuse supplied text or leave it
-  empty — do not fill it. Invented eyebrow labels are the single most
-  common AI-design tell.
+- Do not invent copy SILENTLY. Functional labels the design needs are
+  fine — "About", "Watch", "Featured Work", a field's "Email". Decorative
+  editorial is not: eyebrows that restate the heading, invented taglines,
+  section kickers, footer slugs, made-up names for the newsletter. Reuse
+  supplied text or drop the element. Invented eyebrow labels are the
+  single most common AI-design tell.
+  The test: if a string carries VOICE it is mine; if it carries FUNCTION
+  it is the design's.
 - The seed must not reach the page. Its derived vocabulary must not
   appear in ANY string a visitor can read. Class names, CSS comments and
   filenames may use it freely; rendered text may not.
-- End your report with an explicit list of every copy string you changed,
-  trimmed, omitted, or added. If that list is empty, say so.
+- End your report with a PROPOSED COPY list: every string you changed,
+  trimmed, omitted, or wrote yourself, so I can approve or rewrite it.
+  If that list is empty, say so.
 ```
 
 **Why the shell script matters:** the model cannot generate randomness — asking it to "choose at random" returns tokens that sound random and aren't. `/dev/urandom` is outside the model.
@@ -52,7 +56,15 @@ A base64 seed carries an aesthetic of its own. It *looks like* machine output yo
 > "it's base64 — machine text you'd print out and file"
 > "base64 itself = machine-encoded text → the overall conceit: this is a press proof sheet"
 
-The entropy was real. The framing collapsed it. Two fixes, use both:
+The entropy was real. The framing collapsed it.
+
+**Changing the encoding alone does not fix this — it relocates the mode.** A follow-up run used hex, decimal and word seeds, plus an explicit ban on the paper genre. Result: hex → glazed ceramics, decimals → glazed ceramics, words → boreal earth and firelight. Two different numeric encodings independently landed on the *same* new genre. Banning one attractor moves the model to the next one; it does not create variety.
+
+The reason: a numeric seed offers only **structure** — runs, ratios, clusters. The model must supply the semantics itself, and it draws them from the same prior every time. A **semantic seed supplies meaning from outside the model**, which is the entire point of seeding.
+
+> **Prefer word seeds for direction. Use numeric seeds for detail.** The strongest combination is a word seed for the genre, and a numeric seed for proportions, spacing and palette derivation inside it.
+
+Two further fixes, use both:
 
 **1. Strip the medium in the prompt.** Add this line to the procedure:
 

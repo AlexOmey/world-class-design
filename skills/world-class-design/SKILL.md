@@ -97,7 +97,15 @@ When a capability is missing, say so and carry on with the rest. **Never paper o
 
 **The leak is almost never the body copy — it's the chrome.** Agents faithfully paste the bio and then invent an eyebrow, a section label, a caption, a tagline, a CTA microcopy line, a footer slug. Observed in a single run: `The Weekly Dispatch`, `A decade on one thread`, `I ship AI products and write down what happens. Based in London, usually in an editor.` None were briefed.
 
-That is two failures at once: it overwrites the user's voice, and invented eyebrow labels are the **first row of [ai-tells.md](references/ai-tells.md)** — the most reliable AI tell there is. So the rule: if the brief did not supply text for a slot, either reuse supplied text or leave the slot empty. Do not fill it.
+That is two failures at once: it overwrites the user's voice, and invented eyebrow labels are the **first row of [ai-tells.md](references/ai-tells.md)** — the most reliable AI tell there is.
+
+The rule is not "never write a string" — a design with a hole where a nav label should be is just broken. It is **never write one silently**:
+
+- **Functional labels are fine.** `About`, `Watch`, `Featured Work`, a form's `Email` — text that names a thing the user interacts with. Write them.
+- **Decorative editorial is not.** Eyebrows above headings that restate the heading, invented taglines, section kickers, footer slugs, made-up product names for the newsletter. `The Weekly Dispatch` and `A decade on one thread` are this. Reuse supplied text, or drop the element.
+- **Anything you write, you mark.** List it under `PROPOSED COPY` in your report so the user approves or rewrites it. It is theirs to decide under Technique 8, not yours to ship.
+
+The test: if the string carries *voice*, it is the user's. If it carries *function*, it is the design's.
 
 **The seed must not reach the page.** "Don't reveal the string" is too narrow — the leak is the seed's *derived vocabulary* surfacing as rendered text. A run seeded toward weaving shipped a visible label reading `Warp & Weft · London`. Class names, CSS comments and file names may use the seed's vocabulary freely; **anything a visitor can read may not**.
 
@@ -121,9 +129,26 @@ Do not reveal the string in the design; it is inspiration only.
 
 Asking a model to "be random" does not work — it predicts tokens that *sound* random. The randomness has to come from `head -c 64 /dev/urandom | base64` or similar.
 
-**Vary the seed encoding across variants, and tell the model the seed has no medium of its own.** A base64 blob looks like machine output you would print and file, and models read that connotation as direction — in a real 3-variant run, three independent seeds produced three palettes but one genre (printed paper artifact). Use base64 / hex / decimals / random dictionary words across the batch, and add the medium-stripping line from [the prompt library](references/prompt-library.md#-the-medium-trap--read-this-before-running-variants). This is the single biggest failure mode of Technique 1.
+**Use word seeds for direction — numeric seeds converge whatever the encoding.** This is Technique 1's biggest failure mode, and it is not what it first appears to be.
 
-**Run 3–4 variants in parallel**, each with its own seed and encoding, as independent subagents so the seeds do not contaminate each other. Present all of them to the user.
+A base64 blob looks like machine output you would print and file, and models read that connotation as direction: three independent base64 seeds gave three palettes but one genre (printed paper artifact). The obvious fix — vary the encoding — **does not work**. A follow-up run with hex, decimal and word seeds gave hex → glazed ceramics, decimals → glazed ceramics, words → boreal earth and firelight. Two numeric encodings, same new genre. Banning an attractor relocates the mode; it does not create variety.
+
+A numeric seed offers only structure, so the model supplies the semantics from its own prior every time. A word seed supplies meaning from outside the model — the entire point of seeding.
+
+> **`shuf -n 10 /usr/share/dict/words` for the genre; numbers for proportions, spacing and palette inside it.**
+
+Also add the medium-stripping line from [the prompt library](references/prompt-library.md#-the-medium-trap--read-this-before-running-variants).
+
+**Run 3–4 variants in parallel** as independent subagents — and mean it, see below. Present all of them to the user.
+
+#### Isolating parallel variants
+
+Subagents in one session are not isolated by default. Two leaks observed in a single run:
+
+- **Shared browser.** An agent navigating by tab id landed in *another agent's tab*, saw its design, and rewrote its own direction to avoid duplicating it — silently converting an independent sample into a dependent one. It happened to report this; had it not, the batch would have looked more varied than it was, and the conclusion drawn from it would have been wrong.
+- **Shared dev server.** One agent's syntax error 500'd every route, and other agents logged that failure as their own.
+
+Give each variant its own route or output directory, tell it explicitly not to open the others, and have it verify in its own browser instance rather than a shared pane. **If a variant reports seeing another's work, discard it as evidence** — it is no longer an independent sample, and counting it will overstate the variety you achieved.
 
 ### Technique 2: Ambitious briefs
 
