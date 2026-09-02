@@ -352,6 +352,8 @@ Use whatever browser your agent has. These are failure modes observed in practic
 | Capture is blank below the fold, fine at the top | Same compositing problem, at scroll offsets | Use a headless driver (Playwright, chrome-devtools) for below-the-fold sections |
 | Screenshot file cannot be read back | A relative filename resolved inside the driver's own output directory | Pass an **absolute** path *inside the project root* — drivers are usually jailed to it, so a system temp or scratchpad path is rejected |
 | Page looks half-faded or empty | Captured mid scroll-reveal animation | Wait ~3s after load before capturing |
+| Page renders blank in a full-page or tall capture, but fine in the browser | Scroll-driven `view()` reveals animating **opacity**: the timeline never advances in a tall viewport, so elements stay at zero. **Waiting does not fix this** — it is a timeline problem, not a timing one | Have variants use transform-only reveals, or capture at a real viewport height and scroll |
+| Mobile capture looks broken but the layout is fine | Headless Chrome `--window-size` clamps to a minimum window width (~470px on macOS), so `--window-size=390,844` never actually renders at 390px | Set a true viewport (Playwright `setViewportSize`, or CDP `Emulation.setDeviceMetricsOverride`) instead of a window size |
 | Design looks fine to you, critic disagrees wildly | You screenshotted a different state than it did | Pin both to the same URL and viewport |
 
 A headless driver is generally the more reliable choice for an automated loop — no visible window to go stale. Whatever you use, confirm the first capture is actually a faithful picture of the page before you start trusting scores built on it.
