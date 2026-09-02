@@ -62,3 +62,12 @@ Three things in there that cost real time to discover:
 ## Credits
 
 Process and techniques: [Anshu Chimala](https://substack.com/@anshuc). Skill implementation and fal.ai reference: this repo.
+
+## Editing this skill
+
+**Never write `$` followed by a digit in `SKILL.md`.** The skill loader performs
+positional-argument substitution when the skill is invoked with arguments, so
+`$0` is replaced by the caller's argument text — `"costs $0"` renders as
+`"costs Redesign the landing page"`. Write currency as `USD 0.05` instead.
+Environment variables like `$FAL_KEY` are unaffected. Reference files under
+`references/` are read as plain files and are not substituted.

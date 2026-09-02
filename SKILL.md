@@ -50,7 +50,7 @@ Read-only, ~instant, safe to re-run. It probes the environment and exits:
 | **10** `DEGRADED` | Core works, enrichment missing | Name exactly what's unavailable, offer to fix it, and let them decline. Proceed either way. |
 | **20** `BLOCKED` | Core dependency missing, or a **key is leaking into an app env file** | Stop. Fix, re-run preflight, then continue. |
 
-Add `--verify` to confirm the fal key actually authenticates (one free API call, $0). Worth doing on a genuine first run.
+Add `--verify` to confirm the fal key actually authenticates (one free API call, costs nothing). Worth doing on a genuine first run.
 
 **Also check one thing the script cannot see:** can you screenshot the running design? Any browser automation (built-in browser tool, Playwright MCP, chrome-devtools MCP) or a simulator tool for native apps. Without it, Technique 3 — the highest-leverage step — cannot run. Say so plainly rather than substituting your own judgment for the critic's.
 
@@ -183,7 +183,7 @@ If it prints `not configured`, walk the user through **[fal-video.md § 1 Setup]
 Two things to say before the user tops up:
 
 1. **fal has no spend caps** — no per-key or per-account budget limit exists, so the usual "make a key with a tight spend limit" advice does not apply. The only real control is loading a small amount of prepaid credit.
-2. **Video is the expensive step.** A single 30s Seedance 2.5 clip at 720p is ~$14. Draft on a $0.05/s model, run the keeper once on the good one.
+2. **Video is the expensive step.** A single 30s Seedance 2.5 clip at 720p is roughly USD 14. Draft on a USD 0.05/s model, run the keeper once on the good one.
 
 **Two workflows:**
 
