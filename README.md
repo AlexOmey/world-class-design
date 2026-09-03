@@ -31,8 +31,10 @@ Codex implements the same [Agent Skills standard](https://agentskills.io), so th
 
 ```bash
 codex plugin marketplace add AlexOmey/world-class-design
-codex plugin add world-class-design
+codex plugin add world-class-design@world-class-design
 ```
+
+The `@marketplace` suffix is required — `codex plugin add <name>` alone errors with *"plugin requires --marketplace"*. Verified working on codex-cli 0.146.0; it resolves private repos through your existing git auth.
 
 Invoke with `$world-class-design`, or let it trigger on its description. Working inside a clone needs nothing at all — the `.agents/skills` symlink makes it auto-discovered. To install it globally without plugin machinery:
 
