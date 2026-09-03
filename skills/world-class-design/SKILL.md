@@ -392,6 +392,7 @@ Hand the copy to the user. This step is theirs, not yours — flag it as the one
 - **Look at the render, not the diff.** A design fault is visible in a screenshot in one second and invisible in a code review for an hour.
 - **Do not optimise the score.** The critic score finds faults; it does not grant permission to ship. Past a point, pushing the number makes the page worse. The user decides.
 - **Long agents must land edits incrementally.** Two Stage 3 agents were killed mid-run by transient `529 Overloaded` errors. Batching many edits into one write at the end means a kill loses everything; landing each change and leaving the route compiling means a kill loses one step. Instruct agents accordingly, and check what actually reached disk before retrying rather than assuming a failed agent did nothing.
+- **Verify with a production build, not just a dev server.** A variant that runs perfectly under `next dev` can fail `next build`, and prerender or static-export crashes only appear in the latter. Type-checking does not catch them either — they are runtime errors during export. Observed: three branches pushed after a full session of dev-server verification all failed their first production build. Run the project's real build command before calling a variant done.
 - **Keep the losers.** Save prompts that produced bad output in the project. Re-run them when a new model ships — that is how you know you are using the current ceiling.
 
 ---
