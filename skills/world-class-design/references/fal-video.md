@@ -1,6 +1,9 @@
 # fal.ai video generation
 
-Working reference for Technique 5. Verified against fal's own model pages on 2 September 2026. Model slugs and prices move fast — **re-check the model page before relying on any row here**, and see [Verifying before you build](#verifying-before-you-build).
+Working reference for Technique 5. **Executed end to end on 3 September 2026** — one clip generated, matted and shipped for about USD 0.84. Slugs all resolved; several prices did not. Corrections from that run are marked **[verified]** or **[corrected]** throughout.
+
+> ### ⚠️ Read before you trust a price
+> Five of seven image-to-video prices in §4 were wrong when checked against the pricing API, two of them wrong in *unit* (per-generation vs per-second vs per-compute-second). **Treat every price below as indicative and read the live value** — see [Verifying before you build](#verifying-before-you-build). The mistake is not academic: a wrong unit can be a 12× error in either direction.
 
 ---
 
@@ -144,6 +147,19 @@ url = fal_client.upload_file("frame.png")     # -> https://v3b.fal.media/files/b
 ```ts
 const url = await fal.storage.upload(file);
 ```
+**curl path for uploading an input file [corrected]** — the SDK snippets above were the only route documented, which is a hole in a curl-first reference:
+
+```bash
+# 1. initiate
+curl -s -X POST "https://rest.alpha.fal.ai/storage/upload/initiate?storage_type=fal-cdn-v3" \
+  -H "Authorization: Key $FAL_KEY" -H "Content-Type: application/json" \
+  -d '{"content_type":"image/png","file_name":"seed.png"}'
+# -> {"file_url": "...", "upload_url": "..."}
+
+# 2. PUT the bytes to upload_url (no auth header needed)
+curl -s -X PUT "<upload_url>" --data-binary @seed.png -H "Content-Type: image/png"
+```
+
 Any public URL works. Base64 data URIs work for small images but fal warns off anything beyond a few KB — **never data-URI a video**.
 
 ---
@@ -163,6 +179,12 @@ This is the technique that powers scroll-scrubbed transitions. **Parameter names
 | `fal-ai/kling-video/v2.1/pro/image-to-video` | `image_url` | `tail_image_url` |
 | `fal-ai/vidu/start-end-to-video` | `start_image_url` | `end_image_url` |
 | `fal-ai/pixverse/v6/transition` | `first_image_url` | `end_image_url` |
+
+**Schema traps that cost real money [verified].** On `fal-ai/kling-video/v3/pro/image-to-video`:
+- `duration` is a **string** enum (`"3"`…`"15"`). An integer is rejected.
+- `generate_audio` defaults to **`true`**. The "no-audio" rate everyone quotes requires passing `false` explicitly — otherwise you are billed the audio tier without asking for it.
+
+Neither appears in fal's prose docs; both are in the OpenAPI schema.
 
 **Default to Kling O1** — it is the model designed for start/end interpolation. It requires you to cite the frames in the prompt as `@Image1` (start) and `@Image2` (end), and `prompt` is required. Duration 3–10s, images ≤10 MB and ≥300px, aspect ratio 0.40–2.50.
 
@@ -202,7 +224,7 @@ This is the technique that powers scroll-scrubbed transitions. **Parameter names
 ### Picking one
 
 - **Physical realism / temporal consistency** (fal publishes no benchmark, so this is directional): **Happy Horse 1.0** leads Artificial Analysis without-audio; **Seedance 2.0** tops image-to-video; **Seedance 2.5** has the longest coherent take; **Kling O3 Pro** for identity persistence across shots; **Veo 3.1** for colour science and 4K rather than physics.
-- **Draft cheap, finish expensive.** Iterate the prompt on PixVerse or Grok at $0.05–0.06/s, then run the keeper once on Seedance or Kling. Same logic as the critic loop: cheap model does the grunt work.
+- **Draft cheap, finish expensive — but only for composition [corrected].** Cheap models cannot be trusted for *background behaviour*, which puts this in direct conflict with workflow A's "render over the page's real background colours". Observed: PixVerse v6 ignored an explicit cream-background instruction across two escalating prompts — frame 0 came back cream, frame 30 onward went dark grey and stayed there. Kling v3 Pro held it across 121 frames. **Iterate composition and motion on the draft model; verify background behaviour only on the keeper.**
 - **Seedance 2.5 specifics:** native 30s single pass (no stitching), 24fps, aspect ratios `auto,21:9,16:9,4:3,1:1,3:4,9:16`. Native audio is on by default and **free** — unusual, most models surcharge audio. Billed by tokens at $0.0214/1k, so wider aspect ratios cost more per second.
   ⚠️ Its API schema lists 1080p but fal's own explainer says 720p is the ceiling and only prices 480p/720p. **Test before relying on 1080p.**
 
@@ -222,7 +244,7 @@ This is the step that makes a generated clip layer into a UI instead of reading 
 
 | Slug | Output | Price |
 |---|---|---|
-| `fal-ai/birefnet/v2/video` | VP9 / ProRes4444 / X264 / GIF. **`output_mask: true` returns a separate matte video** — the only endpoint that does | **free** (compute-sec) |
+| `fal-ai/birefnet/v2/video` | VP9 / ProRes4444 / X264 / GIF. **`output_mask: true` returns a separate matte video** — the only endpoint that does | **USD 0.0008/compute-sec** — *not free* **[corrected]** |
 | `fal-ai/ben/v2/video` | WebM VP9 alpha (MP4 has none) | $0.001/megapixel (w×h×frames) |
 | `veed/video-background-removal` | VP9 alpha or dual H264 | $0.0225/30 frames |
 | `veed/video-background-removal/fast` | same | $0.012/30 frames |
@@ -230,6 +252,17 @@ This is the step that makes a generated clip layer into a UI instead of reading 
 | `pixelcut/video-background-removal` | webm_vp9 default | $0.022/30 frames |
 | `bria/video/background-removal/v3` | most format options, `preserve_audio` | $0.05/s |
 | `fal-ai/sam2/video` | promptable segmentation | free |
+
+> ### ⚠️ `ffprobe` lies about the alpha **[verified]**
+> birefnet's WebM reports `pix_fmt=yuv420p`, and ffmpeg decodes it **composited to black** — the exact symptom this section blames on MP4. The alpha is real: it lives in Matroska `BlockAdditional` side data with container-level `AlphaMode=1` (byte pattern `53c081`), which ffmpeg's VP9 decoder ignores and Chrome honours.
+>
+> **So do not verify with ffprobe or an ffmpeg frame dump — you will wrongly conclude the matte failed.** Verify in a browser: draw a frame to a canvas and read the corner pixel's alpha. A working matte gives `[0,0,0,0]` at the corner with `alphaMax 255` somewhere in frame.
+>
+> **Corollary: ffmpeg cannot re-encode that alpha** — any ffmpeg pass silently drops it. If you must post-process, use `output_mask: true`, re-merge the mask against your own clean source with `alphamerge`, and encode `libvpx-vp9 -pix_fmt yuva420p`.
+>
+> **VP9-with-alpha is heavy.** birefnet returned 6.6 MB for a 768px/103-frame clip. Bring it down with resolution, fps and crf before shipping — the clip in the worked example ends at 265 KB at 576×576/12fps.
+
+**birefnet's parameters are human-readable labels, not slugs [corrected].** `video_output_type` must be the literal `"VP9 (.webm)"`; `vp9` or `webm` is rejected. Likewise `model: "Matting"` — which is the right choice for hairline subjects and mattes individual 2px strokes rather than filling them into a disc.
 
 **Start with `fal-ai/birefnet/v2/video`** — it's free, outputs real alpha, and can hand back a separate matte you can composite yourself.
 
@@ -253,7 +286,8 @@ The article's crystal example. The ordering matters and is counter-intuitive:
 
 For a non-refractive subject, rendering on a flat key colour and using `veed/video-background-removal/green-screen` is cheaper and cleaner.
 
-4. **Loop it.** Ask for a seamless loop in the prompt, and verify — if the last frame doesn't meet the first, run a short `fal-ai/kling-video/o1/image-to-video` interpolation from last frame back to first and concatenate.
+4. **Loop it — with ffmpeg, not another generation [corrected].** Video models do not close a rotation on request; the observed clip's best loop-back frame still differed from frame 0 by MSE 157.8. The interpolation fix this reference used to recommend is wrong twice over: for a rotating subject it produces a visibly *reverse-spinning* segment, and it costs about USD 0.34.
+   Use a tail-into-head crossfade instead. It is free, and it measured better than the clip's own motion: a 16-frame crossfade brought the seam to **MSE 14.95**, below the clip's typical adjacent-frame delta of 20.96. The cost is a fraction of a second where the subject morphs rather than rotates — invisible at the opacity these clips usually ship at.
 
 ### B. Scroll-scrubbed state transitions
 
@@ -287,8 +321,12 @@ Keep clips short (3–6s). Scrubbing a 30s clip means downloading 30s of video b
 
 Slugs, prices and parameter names in this file were correct on 2 Sep 2026 and **will drift**. Before writing pipeline code:
 
-1. Open `https://fal.ai/models/<slug>/api` and read the actual input schema — especially the first/last frame parameter names.
-2. Confirm price via the pricing API call above, not a scraped page.
+1. **Read the schema machine-readably [corrected].** The old advice here was "open `https://fal.ai/models/<slug>/api`", which an agent cannot do. Use the OpenAPI endpoint instead — no auth required:
+   ```bash
+   curl -s "https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=<slug>" | jq .
+   ```
+   This is step one of any fal work. It is the only reliable source for parameter names, enums and types — all three bit during the first real run.
+2. Confirm price via the pricing API call above, not a scraped page. **It rate-limits** — 16 sequential calls returned `429` **[verified]**. Batch endpoint ids into one request rather than looping.
 3. Run one cheap clip end-to-end before wiring anything into the design.
 
 Flagged as unverified at time of writing: fal publishes no generation-time figures for video models (don't promise the user a duration); the absence of spend caps is inferred from docs describing only prepaid credits; Seedance 2.5's 1080p support is contradicted between its schema and fal's own explainer.
