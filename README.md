@@ -91,7 +91,9 @@ skills/world-class-design/
 
 ## A note on the fal.ai reference
 
-`references/fal-video.md` was verified against fal's own model pages on **2 September 2026**. Model slugs, prices and parameter names move fast, and fal's namespace is inconsistent (newer partner models drop the `fal-ai/` prefix). The file ends with a "verify before you build" section and flags what could not be confirmed. Re-check the model page before writing pipeline code.
+> **The fal.ai reference is a dated snapshot.** Model slugs, prices and parameter names in `references/fal-video.md` were correct on **3 September 2026** and will rot. The file flags what it could not confirm and ends with a verification procedure — follow it before writing pipeline code rather than trusting the tables.
+
+`references/fal-video.md` was verified against fal's own model pages on 2 September 2026, then **corrected against a real execution on 3 September** — nine of its claims were wrong, including advice that would have led you to conclude a working video pipeline had failed. Model slugs, prices and parameter names move fast, and fal's namespace is inconsistent (newer partner models drop the `fal-ai/` prefix). The file ends with a "verify before you build" section and flags what could not be confirmed. Re-check the model page before writing pipeline code.
 
 Three things in there that cost real time to discover:
 

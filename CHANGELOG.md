@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.4.0 — unreleased
+
+### Fixed
+- Codex install, verified end to end for the first time. Three bugs, all
+  found by running the documented commands rather than trusting them:
+  `codex plugin add <name>` needs an `@marketplace` suffix; the marketplace
+  manifest's `source` must be the string `"./"`, not an object, which
+  otherwise fails with "plugin not found in marketplace"; and Codex reads
+  `.agents/plugins/marketplace.json`, not the `.claude-plugin` path.
+  Confirmed installed and enabled on codex-cli 0.146.0, with all three
+  references and the preflight script packaged and runnable.
+
+### Added
+- Variants must be verified with a production build, not just a dev server.
+  A prerender or static-export crash is invisible to both a dev server and
+  a type-check.
+- README now flags the fal.ai reference as a dated snapshot with a
+  verification procedure.
+
 ## 0.3.0 — unreleased
 
 First end-to-end run: all eight techniques executed against two real
