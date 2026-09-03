@@ -252,7 +252,20 @@ Fresh context is what keeps the critic honest, and it is also what lets it rever
 Three defences:
 
 1. **Keep a settled-decisions list** outside the loop. *Confirmed effective* — a second run with one showed no self-contradiction across iterations, where the run without one reversed its own instruction. When the user or you accept a direction, write it down and pass it to the critic as constraints: "these choices are settled, judge everything else." This preserves fresh context on *quality* while stopping it relitigating *direction*.
-2. **Prefer the comparative prompt.** Ranking your screenshot against 4 professional references resists this failure far better than gap-counting, because the bar is external and fixed rather than regenerated each run. If you have references, use that variant — this is the concrete reason it's rated "Best" above.
+2. **Prefer the comparative prompt. [verified — use this one]** Ranking your screenshot against 4 professional references resists the plateau because the bar is external and fixed rather than regenerated each run. Run head to head on the same page, it beat gap-counting on every axis:
+
+   | | Gap-counting | Comparative |
+   |---|---|---|
+   | Output | 14 then 15 unranked faults | A ranked position + 5 fixes capped by leverage |
+   | Score behaviour | 6/10 twice across real improvement | A position it can be *wrong* about |
+   | Actionability | A to-do list | "These three are a half-day and move you above X" |
+   | Blind spot | Never says what works | Names what ours does better than a reference, specifically |
+
+   It also produces *transferable* criticism — "one focal point per screen", "one line system", "a label budget" — rather than a list of instances. Those generalise to the next page; a list of fifteen does not.
+
+   **Capture ours the same way the references were captured** — same viewport, viewport-only if they are first-impression shots. A full-page capture of yours against above-the-fold shots of theirs makes the ranking meaningless.
+
+   Getting references is the only cost, and it is a *taste* input: ask the user for sites they admire rather than choosing for them.
 3. **Diff against the previous screenshot yourself.** The critic cannot see that its new gap 3 was created by fixing its old gap 2. In the observed run, chasing "make it bleed off the trim" truncated the wordmark, and mobile wrapped it mid-word. Only the orchestrator can catch a regression like that — compare before and after every iteration, and treat a new fault in previously-fine territory as a stop signal, not a finding.
 
 Grade the critic's own prompt on this scale:
