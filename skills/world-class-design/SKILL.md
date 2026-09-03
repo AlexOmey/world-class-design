@@ -338,6 +338,10 @@ Two things to say before the user tops up:
 
 **Keyframe interpolation is where this usually breaks:** the first/last-frame parameter names differ per model (`start_image_url`/`end_image_url` vs `image_url`/`end_image_url` vs `image_url`/`tail_image_url`). Default to `fal-ai/kling-video/o1/image-to-video`, which is purpose-built for start→end and requires citing the frames as `@Image1`/`@Image2` in the prompt. Check the table in the reference before coding.
 
+**An asset nobody can see is an asset you did not buy. [verified]** The first real run generated, matted and shipped a clip correctly — then wired it in at `opacity: 0.24`, over a page grid of near-identical stroke weight, with a card covering its centre. It cost USD 0.84 and the page owner could not tell it had been added. The technique had worked; the integration wasted it.
+
+Budget the same care for placement as for generation. After wiring an asset in, ask someone who did not build it whether they can see it — and if the honest answer is no, either fix the placement or cut the asset. A generated image nobody notices is the same failure as a CSS gradient standing in for artwork: effort spent, nothing communicated.
+
 **Always download the outputs.** fal's hosted files expire, and they are public by default.
 
 ### ⏸ Checkpoint 2
@@ -373,6 +377,10 @@ Every line gets rewritten by a human in one voice. Human copy is nearly always s
 
 If the project or user has a house-voice or de-AI-ing skill available, load it for this step. Otherwise apply the copy checklist at the end of [references/ai-tells.md](references/ai-tells.md).
 
+**[verified] Model copy passes every automated check and is still wrong.** In a real run the page carried an invented bio line — *"Founder, product person, and the person who has to fix it when it breaks"* — that cleared every gate: no invented facts, sources cited, and the copy deck correctly labelled it implementer-written. The owner read it once and said he had never described himself that way. It had also quietly asserted a fact his site never states.
+
+The process can only **flag**; flagging is not catching. Nobody but the owner can hear that a sentence does not sound like them, which is exactly why this technique is a handoff and not an automated pass. Hand over a deck marked *theirs* vs *ours* and let them read it.
+
 ### ⏸ Checkpoint 3
 Hand the copy to the user. This step is theirs, not yours — flag it as the one thing you cannot do for them.
 
@@ -383,6 +391,7 @@ Hand the copy to the user. This step is theirs, not yours — flag it as the one
 - **Parallelism is the point.** Stage 1 variants and Stage 2 critic runs are independent — dispatch them concurrently in a single message.
 - **Look at the render, not the diff.** A design fault is visible in a screenshot in one second and invisible in a code review for an hour.
 - **Do not optimise the score.** The critic score finds faults; it does not grant permission to ship. Past a point, pushing the number makes the page worse. The user decides.
+- **Long agents must land edits incrementally.** Two Stage 3 agents were killed mid-run by transient `529 Overloaded` errors. Batching many edits into one write at the end means a kill loses everything; landing each change and leaving the route compiling means a kill loses one step. Instruct agents accordingly, and check what actually reached disk before retrying rather than assuming a failed agent did nothing.
 - **Keep the losers.** Save prompts that produced bad output in the project. Re-run them when a new model ships — that is how you know you are using the current ceiling.
 
 ---
@@ -400,5 +409,7 @@ Use whatever browser your agent has. These are failure modes observed in practic
 | Page renders blank in a full-page or tall capture, but fine in the browser | Scroll-driven `view()` reveals animating **opacity**: the timeline never advances in a tall viewport, so elements stay at zero. **Waiting does not fix this** — it is a timeline problem, not a timing one | Have variants use transform-only reveals, or capture at a real viewport height and scroll |
 | Mobile capture looks broken but the layout is fine | Headless Chrome `--window-size` clamps to a minimum window width (~470px on macOS), so `--window-size=390,844` never actually renders at 390px | Set a true viewport (Playwright `setViewportSize`, or CDP `Emulation.setDeviceMetricsOverride`) instead of a window size |
 | Design looks fine to you, critic disagrees wildly | You screenshotted a different state than it did | Pin both to the same URL and viewport |
+| Below-the-fold images render as empty boxes | Lazy loading has not fired during a full-page capture — the content is fine | Scroll the page programmatically, wait, then capture. **Do not act on this**: it nearly caused four real screenshots to be deleted as "placeholder-shaped holes" |
+| Images look soft or upscaled | A `sizes` attribute narrower than the element's real width makes the framework serve an undersized variant | Read `naturalWidth` vs `getBoundingClientRect().width` in the page. In the same run above, the *real* defect was invisible in the capture that produced the false alarm |
 
 A headless driver is generally the more reliable choice for an automated loop — no visible window to go stale. Whatever you use, confirm the first capture is actually a faithful picture of the page before you start trusting scores built on it.

@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.3.0 — unreleased
+
+First end-to-end run: all eight techniques executed against two real
+codebases, ~20 variants built, one page taken through every stage.
+
+### Verified
+- Technique 4 (Codex image generation) and Technique 5 (fal.ai video) both
+  work. The fal reference was wrong in nine places and is corrected.
+- The comparative critic prompt beats gap-counting on every axis and is now
+  the recommended variant.
+- The settled-decisions list stops a critic contradicting itself between
+  iterations.
+
+### Corrected
+- Seed guidance. The lever is the *derivation instruction*, not the seed
+  source: fourteen runs across five seed types all produced an artifact or
+  instrument register, and only changing how the model reads the seed broke
+  the pattern. Four of those were the source procedure verbatim on a
+  greenfield app, which rules out this being an artifact of redesigning live
+  products.
+- Copy fidelity is a stage rule, not a global one. Locking strings locks
+  structure.
+- The default layout is a diagnostic, not something to ban.
+- The critic score is triage, not progress — measure gap turnover.
+- Preflight no longer blocks projects that legitimately use OpenAI or Gemini.
+
+### Added
+- Facts have provenance: sourced-from-code is not cleared-to-publish.
+- Technique 4 may not generate anything a visitor would read as evidence.
+- An asset placed where nobody can see it is an asset you did not buy.
+- Codex support: `.agents/skills`, `.codex-plugin/`, marketplace manifest.
+
 ## 0.2.0 — unreleased
 
 ### Added
