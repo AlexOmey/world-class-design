@@ -6,6 +6,16 @@ Left alone, an LLM returns the centre of its training distribution — purple gr
 
 Adapted from [How to turn your AI into a world-class designer](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world) by **Anshu Chimala** (ex-Apple AI R&D), Lenny's Newsletter, 1 September 2026. The three-stage structure and the eight techniques are his; this repo turns them into an executable skill with preflight checks, agent-side instructions, and a worked fal.ai reference.
 
+## What state this is in
+
+**v0.5.0, and honest about it.** This has been run end to end on two real products — a personal site and a live SaaS landing page — across roughly 30 design variants, and every technique has been executed at least once rather than only described. Most of what's here that isn't in the source article came from things going wrong: a video pipeline that looked broken when it worked, a preflight that blocked any project using OpenAI, seed guidance that pointed at the wrong lever entirely.
+
+What that means for you:
+
+- **The findings rest on small samples.** The seed result is 14 runs; the critic plateau is two pages. Directional, not settled.
+- **`references/fal-video.md` will rot.** It's a dated snapshot of a fast-moving API, and it says so.
+- **It is not a magic button.** Techniques 2, 6 and 8 stop and ask you. A run where nobody exercises taste produces something anyone could have produced.
+
 ## Install
 
 This repo is both a plugin and its own marketplace, so it installs in two commands inside Claude Code:
@@ -34,7 +44,7 @@ codex plugin marketplace add AlexOmey/world-class-design
 codex plugin add world-class-design@world-class-design
 ```
 
-The `@marketplace` suffix is required — `codex plugin add <name>` alone errors with *"plugin requires --marketplace"*. Verified working on codex-cli 0.146.0; it resolves private repos through your existing git auth.
+The `@marketplace` suffix is required — `codex plugin add <name>` alone errors with *"plugin requires --marketplace"*. Verified working on codex-cli 0.146.0.
 
 Invoke with `$world-class-design`, or let it trigger on its description. Working inside a clone needs nothing at all — the `.agents/skills` symlink makes it auto-discovered. To install it globally without plugin machinery:
 
@@ -69,8 +79,8 @@ Reports what's available and exits `0` ready / `10` degraded / `20` blocked. Not
 
 The two that carry most of the weight:
 
-- **Seed strings (1).** Asking a model to "be random" doesn't work — it predicts tokens that *sound* random. Real entropy from `/dev/urandom`, interpreted as creative direction, produces genuinely different output every run.
-- **The critic loop (3).** A building agent can't judge its own work; it sees its code and its reasoning, not the page. A separate subagent on a bigger model, given *only a screenshot* in a fresh context, scores it out of 10. Cheap model builds, expensive model judges — in the source's runs the critic was under 10% of output tokens.
+- **Seed strings (1).** Asking a model to "be random" doesn't work — it predicts tokens that *sound* random. Real entropy from `/dev/urandom`, read as creative direction, reliably escapes the default. It does **not** on its own produce structural variety: 14 runs across five seed sources all landed in the same register. The lever is the *derivation instruction* — how you tell the model to read the seed — not the seed itself. The skill documents this at length.
+- **The critic loop (3).** A building agent can't judge its own work; it sees its code and its reasoning, not the page. A separate subagent on a bigger model, given *only a screenshot* in a fresh context, scores it out of 10. Cheap model builds, expensive model judges. **Treat the score as triage, not progress** — it plateaued at a flat number across genuine improvement on two different pages. Measure whether the previous findings disappeared instead.
 
 **The user's taste is the input that makes this work.** Techniques 2, 6 and 8 are explicit checkpoints where the skill stops and asks. Pasting AI-generated ideas back into AI produces something anyone could have produced.
 
@@ -93,7 +103,7 @@ skills/world-class-design/
 
 > **The fal.ai reference is a dated snapshot.** Model slugs, prices and parameter names in `references/fal-video.md` were correct on **3 September 2026** and will rot. The file flags what it could not confirm and ends with a verification procedure — follow it before writing pipeline code rather than trusting the tables.
 
-`references/fal-video.md` was verified against fal's own model pages on 2 September 2026, then **corrected against a real execution on 3 September** — nine of its claims were wrong, including advice that would have led you to conclude a working video pipeline had failed. Model slugs, prices and parameter names move fast, and fal's namespace is inconsistent (newer partner models drop the `fal-ai/` prefix). The file ends with a "verify before you build" section and flags what could not be confirmed. Re-check the model page before writing pipeline code.
+It was written from fal's own model pages on 2 September 2026, then **corrected against a real execution the next day** — nine of its claims were wrong, including advice that would have led you to conclude a working video pipeline had failed. fal's namespace is also inconsistent: newer partner models drop the `fal-ai/` prefix.
 
 Three things in there that cost real time to discover:
 
