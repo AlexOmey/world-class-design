@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.5.0 — unreleased
+
+Corrections from an independent end-to-end run on a second product
+(~18 agents, six rounds, one live codebase) by a session with no context
+from the skill's development.
+
+### Added
+- **Checkpoint 0: agree the scope before building.** Surface treatment,
+  layout, IA or copy — the user's answer, before any brief. Checkpoint 1
+  lands after variants are built, so scope was being decided silently and
+  nothing downstream repaired it.
+- Techniques 1 and 2 **compose**. A strong user concept fixes material and
+  constraints; the seed still drives structure. Treating them as
+  alternatives removes the only mechanism for escaping the default,
+  exactly when a confident brief makes that hardest to notice.
+- In brownfield work, **the existing page is a stronger anchor than any
+  moodboard**. Builders get a copy inventory, palette and material spec —
+  never the current page.
+- Technique 4: judge images at true render size and again at ~35%; prefer
+  canonical forms; generate the subject filling its frame and composite
+  yourself.
+- Codex CLI output is RGB on white with no alpha — composite with
+  `mix-blend-mode: multiply` rather than requesting transparency.
+- For parallel variants, put copy in one shared component every variant
+  imports; structural prevention beats instruction.
+- Restate standing rules in every subagent brief.
+
+### Fixed
+- **The comparative critic is centripetal.** It was recommended
+  unconditionally; it pulls work toward its references by construction, so
+  it is right for polish against a known bar and wrong when the goal is
+  divergence.
+- **The `naturalWidth` resolution check was wrong** and produced a
+  confidently-reported bug that did not exist. Chromium downscales decoded
+  bitmaps, so the value under-reports and varies run to run. Use a fresh
+  `new Image()` decode or curl the URL.
+- Tall-page captures fail three ways silently — the ~16,384 device-px
+  `fullPage` ceiling, page-tall blend layers dropping sections, and fixed
+  layers rendering once. Above ~8,000 CSS px, viewport chunks are the only
+  trustworthy method.
+
 ## 0.4.0 — unreleased
 
 ### Fixed

@@ -95,6 +95,8 @@ Copy is **malleable**. Rewrite headlines, merge, split or reorder sections, cut 
 
 The invariant is the **message architecture**, not the strings. Brief each variant with what every section has to *accomplish* — "establish what this is, for whom, and the core promise" — not with the sentences that currently accomplish it. Give agents a message spec, not a copy deck.
 
+**For parallel variants, put the copy in one shared component every variant imports.** Instruction alone relies on ~n agents each choosing to comply; a shared import makes drift structurally impossible. Verified across ~18 agents and six rounds: exactly one visible string changed, and that was a correction to a code-owned label.
+
 All exploration copy is provisional and must be marked as such. It is a proposal for the user to accept, edit or reject at the checkpoint.
 
 ### Fidelity mode — Stage 3
@@ -135,9 +137,23 @@ Technique 7 says cut the eyebrow; the approved copy deck contains one. In **expl
 
 ---
 
+## ⏸ Checkpoint 0 — Agree the scope before building anything
+
+**Ask this before writing a single brief. One line, but it must be the user's answer, not yours.**
+
+> How far does this change go? Surface treatment only — colour, type, texture, motion on the existing layout? Layout too? Information architecture? Copy? And which existing assets are fair game?
+
+Skipping it is the most expensive failure available in this process, because nothing downstream repairs it. Checkpoint 1 lands *after* the variants are built, so if you silently chose "surface treatment" the user sees four beautiful variants of the page they already had — and Stage 3 subtracts, it does not restructure. Observed in a real run: four rounds of variants locked to the existing layout, and the owner asking *"the page layout has barely changed — will that be considered later, or did the skill fail?"* The honest answer was neither.
+
+Write the answer down and pass it into every brief. It is also what tells you whether the comparative critic is the right tool later (see Technique 3).
+
+---
+
 ## Stage 1 — Discover
 
 ### Technique 1: Seed strings (always do this)
+
+> **Techniques 1 and 2 compose. They are not alternatives.** A user arriving with a strong concept makes it tempting to skip seeding entirely — the concept feels like it supplies the direction. It does not supply *composition*. The concept fixes the **material and the constraints**; the seed still drives **structure and arrangement** inside them. Drop the seed and you have removed the only mechanism here for escaping the centre of the distribution, exactly when a confident brief makes you least likely to notice. Observed: five rounds run on a strong user concept with no seed, all of them structurally conventional.
 
 Never build the first version from a bare brief. Generate real entropy outside the model and use it as creative input:
 
@@ -189,6 +205,10 @@ To find one, run the three-step ideation ladder in the prompt library: broad sha
 A seed reliably changes palette, typography, texture and motion. It does **not** touch the layout archetype — "landing page = vertical scroll, hero with headline left and visual right, sections stacked below" survives almost any aesthetic. In a four-variant run, three produced that same hero regardless of how far apart their palettes were. Of the two variants with a free hand on copy, one broke the archetype and one reproduced it anyway.
 
 **Never hand agents the existing information architecture as a numbered list.** This is the strongest rule in Stage 1 and the easiest to break by accident. An ordered list of sections looks like a neutral requirement and functions as the answer — it imports the current page's structure wholesale while you believe you have only specified content. Give an **unordered set of things a visitor must be able to learn**, and let the direction decide sequence, grouping and emphasis.
+
+**In a brownfield redesign, the existing page is a stronger anchor than any moodboard — and handing it over is the most natural thing in the world to do.** "Start from `app/page.tsx`", "import these sections", "keep the same components" all feel like helpful context and all guarantee a variation on what exists. Observed across five rounds, including one where the layout had been *explicitly unlocked* and the agent told to push.
+
+If you want genuinely different structure, builders must not receive the current structure. Give them a **copy inventory, the palette, and the material spec**, and let them compose from the words up. Keep the existing page for the critic, not the builder.
 
 Other ways briefs leak the default without appearing to: a locked copy deck (headline plus subhead plus eyebrow *is* a hero), section names carried over from the current page, reference screenshots shown to builders rather than held back for the critic, and any phrase like "keep the same sections".
 
@@ -252,7 +272,11 @@ Fresh context is what keeps the critic honest, and it is also what lets it rever
 Three defences:
 
 1. **Keep a settled-decisions list** outside the loop. *Confirmed effective* — a second run with one showed no self-contradiction across iterations, where the run without one reversed its own instruction. When the user or you accept a direction, write it down and pass it to the critic as constraints: "these choices are settled, judge everything else." This preserves fresh context on *quality* while stopping it relitigating *direction*.
-2. **Prefer the comparative prompt. [verified — use this one]** Ranking your screenshot against 4 professional references resists the plateau because the bar is external and fixed rather than regenerated each run. Run head to head on the same page, it beat gap-counting on every axis:
+2. **Prefer the comparative prompt — for polish, not for divergence. [verified]**
+
+   > **It pulls your work toward the references, by construction.** That is what makes it resist the plateau, and it is also its cost. Benchmarked against a conventional, well-executed reference, every note it returns will be accurate *and* will move the page toward that convention — unify the grid, contain that block, tidy the rhythm. Observed in a run whose entire goal was to escape the convention it was being ranked against.
+   >
+   > So pick by job, using the answer from [Checkpoint 0](#-checkpoint-0--agree-the-scope-before-building-anything): **polishing against a known bar → comparative. Trying to diverge → gap-counting**, and accept the plateau, measuring turnover instead of score. Never run the comparative form while a variant is still finding its identity. Ranking your screenshot against 4 professional references resists the plateau because the bar is external and fixed rather than regenerated each run. Run head to head on the same page, it beat gap-counting on every axis:
 
    | | Gap-counting | Comparative |
    |---|---|---|
@@ -305,6 +329,15 @@ Check for a route in this order:
 If none are available, say so and continue without images rather than silently falling back to gradients.
 
 Verify results frame-by-frame in the browser — generated assets often land at the wrong crop or contrast.
+
+**Judge legibility at the size it actually renders, and again at ~35% of that.** Frame-by-frame review catches crop and contrast; it does not catch *"can anyone tell what this is"*. If you need to already know the subject to recognise it, reject the image however well painted. Prefer the most canonical form of an object — the silhouette a child would draw; exotic variants fail this test specifically. Observed: a watercolour kite approved at 1500px read as an ambiguous polyhedron at its real 1043px, and the owner could not identify it.
+
+**Generate the object filling its frame, then place it.** Asking for a composed sheet with a small subject spends most of the pixel budget on empty paper — that kite was effectively a 640px drawing rendering at 1043px. Generate tight, composite at the target ratio yourself.
+
+**Two hard facts about Codex CLI output**, both rediscovered independently by three agents:
+
+- **Its sandbox root is the launch directory.** Asking it to save to an absolute path elsewhere fails with `Operation not permitted` *after* generating the image. Either `cd` to the target directory before invoking it, or harvest from `~/.codex/generated_images/<uuid>/exec-*.png` — the path is printed in its transcript. (Backgrounded `codex exec` also hangs on stdin unless redirected `< /dev/null`.)
+- **Output is RGB on white with no alpha.** Do not ask for a transparent background — composite with `mix-blend-mode: multiply` instead, which drops the white against a warm ground and is also how pigment physically behaves. Generated "white" often measures 250–254 and shows as a faint rectangle under multiply, so push levels to a true 255 first.
 
 ### Technique 5: Video generation via fal.ai
 
@@ -392,6 +425,7 @@ Hand the copy to the user. This step is theirs, not yours — flag it as the one
 - **Look at the render, not the diff.** A design fault is visible in a screenshot in one second and invisible in a code review for an hour.
 - **Do not optimise the score.** The critic score finds faults; it does not grant permission to ship. Past a point, pushing the number makes the page worse. The user decides.
 - **Long agents must land edits incrementally.** Two Stage 3 agents were killed mid-run by transient `529 Overloaded` errors. Batching many edits into one write at the end means a kill loses everything; landing each change and leaving the route compiling means a kill loses one step. Instruct agents accordingly, and check what actually reached disk before retrying rather than assuming a failed agent did nothing.
+- **Restate standing rules in every subagent brief.** Global instructions govern your session; a spawned agent's entire world is its prompt. Deletion policy, branch and commit restrictions, file-scope boundaries — one line each, every time. An agent deleted files with `rm` against a standing rule to use `trash`, because nobody told *it*.
 - **Verify with a production build, not just a dev server.** A variant that runs perfectly under `next dev` can fail `next build`, and prerender or static-export crashes only appear in the latter. Type-checking does not catch them either — they are runtime errors during export. Observed: three branches pushed after a full session of dev-server verification all failed their first production build. Run the project's real build command before calling a variant done.
 - **Keep the losers.** Save prompts that produced bad output in the project. Re-run them when a new model ships — that is how you know you are using the current ceiling.
 
@@ -408,9 +442,10 @@ Use whatever browser your agent has. These are failure modes observed in practic
 | Screenshot file cannot be read back | A relative filename resolved inside the driver's own output directory | Pass an **absolute** path *inside the project root* — drivers are usually jailed to it, so a system temp or scratchpad path is rejected |
 | Page looks half-faded or empty | Captured mid scroll-reveal animation | Wait ~3s after load before capturing |
 | Page renders blank in a full-page or tall capture, but fine in the browser | Scroll-driven `view()` reveals animating **opacity**: the timeline never advances in a tall viewport, so elements stay at zero. **Waiting does not fix this** — it is a timeline problem, not a timing one | Have variants use transform-only reveals, or capture at a real viewport height and scroll |
+| **Bottom of a full-page capture is blank**, or slabs are missing from the middle | Three separate causes, all silent, all inside a headless driver: `fullPage` fails past ~16,384 **device** px (only ~8,200 CSS px at DPR 2); a page-tall `mix-blend-mode` layer stops rasterising and drops sections; `position: fixed` layers render once at the final scroll offset and blank elsewhere | **Above ~8,000 CSS px, viewport-sized chunks are the only trustworthy capture.** Or drop DPR to 1. Never judge a page carrying a full-bleed blend layer from a single full-page PNG. For the fixed-layer case, use `position: absolute` inside a document-height wrapper |
 | Mobile capture looks broken but the layout is fine | Headless Chrome `--window-size` clamps to a minimum window width (~470px on macOS), so `--window-size=390,844` never actually renders at 390px | Set a true viewport (Playwright `setViewportSize`, or CDP `Emulation.setDeviceMetricsOverride`) instead of a window size |
 | Design looks fine to you, critic disagrees wildly | You screenshotted a different state than it did | Pin both to the same URL and viewport |
 | Below-the-fold images render as empty boxes | Lazy loading has not fired during a full-page capture — the content is fine | Scroll the page programmatically, wait, then capture. **Do not act on this**: it nearly caused four real screenshots to be deleted as "placeholder-shaped holes" |
-| Images look soft or upscaled | A `sizes` attribute narrower than the element's real width makes the framework serve an undersized variant | Read `naturalWidth` vs `getBoundingClientRect().width` in the page. In the same run above, the *real* defect was invisible in the capture that produced the false alarm |
+| Images look soft or upscaled | A `sizes` attribute narrower than the element's real width makes the framework serve an undersized variant | **Do not trust an on-page `img.naturalWidth`** — Chromium downscales decoded bitmaps for memory, so it under-reports and varies run to run on the identical URL (measured 1175–1684 for one image that is really 1920 wide). It produced a confidently-reported bug that did not exist. Verify with a fresh `new Image()` decode of `currentSrc`, or `curl` the URL and measure the bytes |
 
 A headless driver is generally the more reliable choice for an automated loop — no visible window to go stale. Whatever you use, confirm the first capture is actually a faithful picture of the page before you start trusting scores built on it.
