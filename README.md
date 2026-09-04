@@ -15,6 +15,7 @@ What that means for you:
 - **The findings rest on small samples.** The seed result is 14 runs; the critic plateau is two pages. Directional, not settled.
 - **`references/fal-video.md` will rot.** It's a dated snapshot of a fast-moving API, and it says so.
 - **It is not a magic button.** Techniques 2, 6 and 8 stop and ask you. A run where nobody exercises taste produces something anyone could have produced.
+- **fal.ai has no spend caps** if you use the optional video technique. Load a small amount of prepaid credit; that is the only real control. [`references/fal-video.md`](skills/world-class-design/references/fal-video.md) has the rest.
 
 ## Install
 
@@ -99,27 +100,6 @@ skills/world-class-design/
   references/fal-video.md        fal.ai setup, API, model slugs, video pipelines
 ```
 
-## A note on the fal.ai reference
-
-> **The fal.ai reference is a dated snapshot.** Model slugs, prices and parameter names in `references/fal-video.md` were correct on **3 September 2026** and will rot. The file flags what it could not confirm and ends with a verification procedure — follow it before writing pipeline code rather than trusting the tables.
-
-It was written from fal's own model pages on 2 September 2026, then **corrected against a real execution the next day** — nine of its claims were wrong, including advice that would have led you to conclude a working video pipeline had failed. fal's namespace is also inconsistent: newer partner models drop the `fal-ai/` prefix.
-
-Three things in there that cost real time to discover:
-
-- fal's own queue documentation is **wrong** about URL construction — submit takes the full model slug, status/result take only `owner/alias`.
-- Every MP4 output path silently composites transparency to black. Only VP9/WebM and ProRes4444 carry alpha.
-- **fal has no spend caps.** No per-key or per-account budget limit exists. The only real control is loading a small amount of prepaid credit.
-
 ## Credits
 
 Process and techniques: [Anshu Chimala](https://substack.com/@anshuc). Skill implementation and fal.ai reference: this repo.
-
-## Editing this skill
-
-**Never write `$` followed by a digit in `SKILL.md`.** The skill loader performs
-positional-argument substitution when the skill is invoked with arguments, so
-`$0` is replaced by the caller's argument text — `"costs $0"` renders as
-`"costs Redesign the landing page"`. Write currency as `USD 0.05` instead.
-Environment variables like `$FAL_KEY` are unaffected. Reference files under
-`references/` are read as plain files and are not substituted.

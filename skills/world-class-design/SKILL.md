@@ -14,6 +14,12 @@ allowed-tools:
   - WebFetch
 ---
 
+<!-- EDITING THIS FILE: never write `$` followed by a digit. The skill loader
+     does positional-argument substitution, so `$0` becomes the caller's
+     argument text — "costs $0" renders as "costs Redesign the landing page".
+     Write currency as `USD 0.05`. `$FAL_KEY` and other names are unaffected.
+     Files under references/ are read as plain files and are not substituted. -->
+
 # World-Class Design
 
 Adapted from [How to turn your AI into a world-class designer](https://www.lennysnewsletter.com/p/how-to-turn-your-ai-into-a-world) — Anshu Chimala (ex-Apple AI R&D), Lenny's Newsletter, 1 Sep 2026.
